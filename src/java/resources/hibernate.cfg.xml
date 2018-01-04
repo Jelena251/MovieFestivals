@@ -25,5 +25,9 @@ and open the template in the editor.
     <property name="hibernate.hbm2ddl.auto">update</property>
     <mapping class="beans.Korisnik"/>
     <mapping class="beans.Zahtev"/>
+    <mapping class="beans.Festival"/>
+    <mapping class="beans.Location"/>
+    <mapping class="beans.Movie"/>
+    <mapping class="beans.Place"/>
   </session-factory>
 </hibernate-configuration>

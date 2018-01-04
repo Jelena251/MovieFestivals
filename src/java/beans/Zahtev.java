@@ -160,7 +160,7 @@ public class Zahtev implements Serializable {
         s.save(this);
         t.commit();
         s.close();
-        return "login";
+        return "index";
     }
 
 }

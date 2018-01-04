@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h1>Add Festival:</h1>
+        <h:panelGrid columns="3">
+
+            <h:outputText value="Name"/>
+            <h:inputText id="name" value="#{festival.name}"
+                         required="true" requiredMessage="Festival Name is required!" label="Name">
+                <p:ajax listener="#{festival.updateData()}" event="change" update="@this, nameMessage"/>
+            </h:inputText>
+            <h:message for="name" style="color:red" id="nameMessage"/>
+            <h:outputText value="Place"/>
+            <h:selectOneMenu id="placeSelection" value="#{festival.chosenPlace}">
+                <f:selectItems value="#{festival.places}"/>
+                <p:ajax update ="locationSelection, placeMessage" listener="#{festival.allLocationsForPlace()}" event="change" />
+            </h:selectOneMenu>
+            <h:message for="name" style="color:red" id="placeMessage"/>  
+
+
+            <h:outputText value="Location"/>
+            <h:selectOneMenu id="locationSelection" value="#{festival.chosenLocation}">
+                <f:selectItems value="#{festival.locations}"/>
+                <p:ajax listener="#{festival.updateData()}" event="change" update="@this, locationMessage"/>
+            </h:selectOneMenu>
+            <h:message for="name" style="color:red" id="locationMessage"/> 
+
+            <h:commandButton value="Add Location">
+                <p:ajax update="chosenLocations, locationBeanMessage" listener="#{festival.addLocation()}" event="click"/> 
+            </h:commandButton>
+            <br/>
+            <h:outputText value="#{festival.locationMessage}" style="color:red" id="locationBeanMessage"/>
+
+            <h:outputText value ="Locations:"/>
+            <h:dataTable id="chosenLocations" value="#{festival.festivalLocations}" var="location">
+                <h:column>
+                    <h:outputText value="#{location.toString()}"/>
+                </h:column>
+                <h:column>
+                    <h:commandLink value="Delete" action="#{festival.deleteLocation()}">
+                        <f:param name="idToDelete" value="#{location.id}" />
+                    </h:commandLink>
+                </h:column>
+            </h:dataTable>
+            <br/>
+            <h:outputText value="Start Date" />
+            <p:calendar id="startDate" value="#{festival.startDate}" pattern="MM/dd/yyyy">
+                <p:ajax listener="#{festival.updateData()}" event="dateSelect" update="@this, startDateMessage"/>
+                <f:convertDateTime pattern="MM/dd/yyyy"/>
+            </p:calendar>
+            <h:outputText id="startDateMessage" value="#{festival.dateMessage}" style="color:red"/>
+
+            <h:outputText value="End Date" />
+            <p:calendar id="endDate" value="#{festival.endDate}" pattern="MM/dd/yyyy">
+                <p:ajax listener="#{festival.updateData()}" event="dateSelect" update="@this, endDateMessage"/>
+                <f:convertDateTime pattern="MM/dd/yyyy"/>
+            </p:calendar>
+            <h:outputText id="endDateMessage" value="#{festival.dateMessage}" style="color:red"/>
+
+            <h:outputText value="Description"/>
+            <h:inputText id="details" value="#{festival.about}">
+                <p:ajax listener="#{festival.updateData()}" event="change" update="@this, descriptionMessage"/>    
+            </h:inputText>
+            <h:message for="details" style ="color:red" id="descriptionMessage"/>
+
+        </h:panelGrid>
+    </h:body>
+</html>
+
