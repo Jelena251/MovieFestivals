@@ -5,6 +5,7 @@
  */
 package beans;
 
+import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +20,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @ManagedBean
 @Entity(name="korisnici")
-public class Korisnik {
+public class Korisnik implements Serializable{
     @GenericGenerator(name = "kaugen", strategy = "increment")
     @GeneratedValue(generator = "kaugen")
     @Id

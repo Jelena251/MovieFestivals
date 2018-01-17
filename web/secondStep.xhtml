@@ -1,12 +1,97 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>Second Step</title>
+        <title>Projections</title>
     </h:head>
     <h:body>
-        
+        <h:panelGrid columns="3" id="pannelGrid1">
+            <h:outputText value="Movie"/>
+            <h:selectOneMenu value="#{festivalController.chosenMovie}" id="selectionMenu" >
+                <f:selectItems  value="#{festivalController.movies}" var="movie" itemValue="#{movie.title}" itemLabel="#{movie.title}" />
+                <p:ajax event="change" update="time"/>
+            </h:selectOneMenu>
+            <p:commandButton value="Add new" type="button" onclick="PF('addMovieDlg').show();">
+                <p:ajax event="dialogReturn" listener="#{festivalController.updateMovies()}" update="selectionMenu"/>
+            </p:commandButton>
+            
+            <h:outputText value="Location"/>
+            <h:selectOneMenu value="#{festivalController.chosenLocation}" id="locSelect">
+                <f:selectItems value="#{festivalController.locations}" var="l" itemValue="#{l.id}" itemLabel="#{l.name}"/>
+                <p:ajax update="@this, hallSelect" event="change" listener="#{festivalController.updateChosenLocationObjForProjection()}"/>
+            </h:selectOneMenu>
+            <br/>
+            <h:outputText value="Hall"/>
+            <h:selectOneMenu value="#{festivalController.projection.sala}" id="hallSelect">
+                <f:selectItems value="#{festivalController.allHallsForLocation()}"/>
+            </h:selectOneMenu>
+            <h:message for="hallSelect"/>
+
+            <h:outputText value="Day"/>
+            <h:selectOneMenu id="date" value="#{festivalController.projection.date}">
+                <f:selectItems value="#{festivalController.allDatesInPeriod()}"/>
+                <f:convertDateTime pattern="yyyy-MM-dd"/>
+            </h:selectOneMenu>
+            <h:message for="date" style="color:red"/>
+
+            <h:outputText value="Time"/>
+            <p:calendar id="time" value="#{festivalController.timeObj}" pattern="HH:mm" timeOnly="true" >
+                <f:convertDateTime pattern="HH:mm"/>
+            </p:calendar>
+            <h:message for="time" style="color:red"/>
+
+            <h:outputText value="Available Places"/>
+            <p:inputText value="#{festivalController.projection.availPlaces}" converter="javax.faces.Integer" id="places"/>
+            <h:message for="places" style="color:red"/>
+
+        </h:panelGrid>
+        <p:commandButton value = "Add Projection"  id="addProjectionButton" binding="#{festivalController.component}">
+            <p:ajax event="click" update="messageProj" listener="#{festivalController.addProjection()}"/>
+        </p:commandButton>
+        <p:message for="addProjectionButton" id="messageProj" />
+        <p:dialog widgetVar="addMovieDlg" modal="true">
+            <p:panelGrid columns="2">
+                <h:outputText value="Title"/>
+                <p:inputText value="#{festivalController.movieObj.title}" />
+
+                <h:outputText value="Original Title"/>
+                <p:inputText value="#{festivalController.movieObj.originalTitle}" />
+
+                <h:outputText value="Year"/>
+                <p:inputText value="#{festivalController.movieObj.year}" converter="javax.faces.Integer"/>
+
+                <h:outputText value="Summary"/>
+                <p:inputText value="#{festivalController.movieObj.summary}"/>
+
+                <h:outputText value="Director"/>
+                <p:inputText value="#{festivalController.movieObj.director}"/>
+
+                <h:outputText value="Stars"/>
+                <p:inputText value="#{festivalController.movieObj.actors}"/>
+
+                <h:outputText value="Runtime"/>
+                <p:inputText value="#{festivalController.movieObj.runtime}" converter="javax.faces.Integer"/>
+
+                <h:outputText value="Country"/>
+                <p:inputText value="#{festivalController.movieObj.countries}"/>
+
+                <h:outputText value="Link1"/>
+                <p:inputText value="#{festivalController.movieObj.link1}"/>
+
+                <h:outputText value="Link2"/>
+                <p:inputText value="#{festivalController.movieObj.link2}"/>
+
+
+            </p:panelGrid>
+            <h:commandButton value="Cancel" onclick="addMovieDlg.hide()"/>
+            <h:commandButton id="button" value="Save" action="#{festivalController.saveMovie()}" 
+                             onclick="PF('addMovieDlg').hide();"/>
+            <h:messages for="button"/>
+        </p:dialog>
+        <h:messages/>
     </h:body>
 </html>
 

@@ -5,15 +5,18 @@
  */
 package beans;
 
+import Model.Location;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 import javax.faces.bean.ManagedBean;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  *
@@ -27,9 +30,11 @@ public class Place implements Serializable {
     @GeneratedValue(generator = "kaugen")
     @Id
     private int id;
+    @Column(unique=true)
     private String name;
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Location> locations;
+    @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Location> locations;
 
     public int getId() {
         return id;
@@ -51,11 +56,11 @@ public class Place implements Serializable {
         return name;
     }
 
-    public Set<Location> getLocations() {
+    public List<Location> getLocations() {
         return locations;
     }
 
-    public void setLocations(Set<Location> locations) {
+    public void setLocations(List<Location> locations) {
         this.locations = locations;
     }
     

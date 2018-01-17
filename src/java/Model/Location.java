@@ -3,60 +3,40 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package beans;
+package Model;
 
+import beans.Place;
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
+import java.util.List;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+
 
 /**
  *
  * @author user
  */
-@ManagedBean(name = "location")
-@Entity(name = "locations")
-public class Location implements Serializable {
-
+@Entity(name="locations")
+@Data
+public class Location implements Serializable{
     @GenericGenerator(name = "kaugen", strategy = "increment")
     @GeneratedValue(generator = "kaugen")
     @Id
     private int id;
     private String name;
+    @ElementCollection
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<String> sale;
     @ManyToOne
     @JoinColumn(name = "place_id")
     private Place place;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Place getPlace() {
-        return place;
-    }
-
-    public void setPlace(Place place) {
-        this.place = place;
-    }
-
-    public String toString() {
-        return this.name + ',' + this.place.getName();
-    }
-
 }

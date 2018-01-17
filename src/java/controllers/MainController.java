@@ -5,12 +5,13 @@
  */
 package controllers;
 
+import Model.Location;
 import beans.Korisnik;
-import beans.Location;
 import beans.Place;
 import constants.ConstantData;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -41,6 +42,29 @@ public class MainController {
     private int currentStep = 1;
     private String stepPage = "firstStep";
     private boolean isComplete = false;
+    private List<String> sale;
+    private String sala;
+
+    public MainController() {
+        sale = new LinkedList();
+    }
+
+    public List<String> getSale() {
+        return sale;
+    }
+
+    public void setSale(List<String> sale) {
+        this.sale = sale;
+    }
+
+    public String getSala() {
+        return sala;
+    }
+
+    public void setSala(String sala) {
+        this.sala = sala;
+    }
+
     /**
      * @return the username
      */
@@ -84,15 +108,26 @@ public class MainController {
     public void setIsComplete(boolean isComplete) {
         this.isComplete = isComplete;
     }
-    
-    
-    public void nextStep(){
+
+    public void nextStep() {
         currentStep++;
-        
-        switch(currentStep){
-            case 1: stepPage = "firstStep"; break;
-            case 2: stepPage = "secondStep"; break;
-            case 3: stepPage = "thirdStep"; isComplete = true; break;
+
+        switch (currentStep) {
+            case 1:
+                stepPage = "firstStep";
+                break;
+            case 2:
+                stepPage = "secondStep";
+                break;
+            case 3:
+                stepPage = "thirdStep";
+                isComplete = true;
+                break;
+            default:
+                stepPage = "firstStep";
+                isComplete = false;
+                currentStep=1;
+                break;
         }
     }
 
@@ -109,8 +144,6 @@ public class MainController {
      *
      * @return
      */
-    
-    
     public String login() {
         poruka = "";
         Configuration cfg = new Configuration();
@@ -138,6 +171,7 @@ public class MainController {
 
         } finally {
             s.close();
+            sf.close();
         }
         return "index ";
     }
@@ -174,6 +208,7 @@ public class MainController {
 
         } finally {
             s.close();
+            sf.close();
         }
         return address;
     }
@@ -247,7 +282,7 @@ public class MainController {
         Transaction t = s.beginTransaction();
         Place placeObj = new Place();
         placeObj.setName(this.place);
-        placeObj.setLocations(new HashSet<Location>());
+        placeObj.setLocations(new LinkedList<Location>());
         try {
             s.save(placeObj);
             t.commit();
@@ -255,6 +290,7 @@ public class MainController {
             e.printStackTrace();
         } finally {
             s.close();
+            sf.close();
         }
         return "administrator";
     }
@@ -272,8 +308,9 @@ public class MainController {
             s.close();
             return "addLocation";
         }
-        
+
         locationObj.setPlace(p);
+        locationObj.setSale(sale);
         locationObj.setName(location);
         p.addLocation(locationObj);
         try {
@@ -284,6 +321,7 @@ public class MainController {
             e.printStackTrace();
         } finally {
             s.close();
+            sf.close();
         }
         return "administrator";
     }
@@ -300,6 +338,7 @@ public class MainController {
         Criteria criteria = s.createCriteria(Place.class);
         List<Place> places = criteria.list();
         s.close();
+        sf.close();
         return places;
     }
 
@@ -334,4 +373,19 @@ public class MainController {
         this.location = location;
     }
 
+    public void addHall() {
+        sale.add(sala);
+    }
+    
+    public void deleteSala(){
+         FacesContext fc = FacesContext.getCurrentInstance();
+        Map<String, String> params
+                = fc.getExternalContext().getRequestParameterMap();
+        String sala = params.get("salaToDelete");
+        sale.remove(sala);
+    }
+    
+    public void updateData(){
+        
+    }
 }

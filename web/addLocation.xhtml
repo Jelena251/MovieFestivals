@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
     <body>
 
@@ -11,19 +12,47 @@
 
             <ui:define name="content">
                 <h:outputText value="Add New Place"/>
+
                 <h:form>
-                    <h:outputText value="Name"/>
-                    <h:selectOneMenu value="#{controller.place}" >
-                        <f:selectItems value="#{controller.places}"/>
-                    </h:selectOneMenu>
-                    <h:message for="place" style="color:red"/>
-                    
-                    <h:outputText value="Name"/>
-                    <h:inputText id="name" value="#{controller.location}" required="true" requiredMessage="This field is mandatory!"/>
-                    
-                    <h:message for="name" style="color:red"/>
-                    <h:commandButton action="#{controller.addLocation()}" value="Add Location"/>
+                    <h:panelGrid columns="3">
+                        <h:outputText value="Place"/>
+                        <h:selectOneMenu value="#{controller.place}" >
+                            <f:selectItems value="#{controller.places}"/>
+                        </h:selectOneMenu>
+                        <h:message for="place" style="color:red"/>
+
+                        <h:outputText value="Location"/>
+                        <h:inputText id="name" value="#{controller.location}" required="true" requiredMessage="This field is mandatory!"/>
+
+                        <h:message for="name" style="color:red"/>
+
+                        <h:outputText value="Hall"/>
+                        <h:inputText id="salaId" value="#{controller.sala}">
+                            <p:ajax listener="#{conroller.updateData()}" event="change"/>
+                        </h:inputText>
+                        
+                        <h:commandButton value="add">
+                            <p:ajax update="chosenHalls" listener="#{controller.addHall()}" event="click"/>
+                        </h:commandButton>
+
+                        <h:outputText value="Odabrane Hale"/>
+                        <h:dataTable id="chosenHalls" value="#{controller.sale}" var="sala">
+                            <h:column>
+                                <h:outputText value="#{sala}"/>
+                            </h:column>
+                            
+                            <h:column>
+                                <h:commandLink value="Delete" action="#{controller.deleteSala()}">
+                                    <f:param name="salaToDelete" value="#{sala}" />
+                                </h:commandLink>
+                            </h:column>
+                        </h:dataTable>
+                        <
+                        <br/>
+                        <h:commandButton action="#{controller.addLocation()}" value="Add Location"/>
+                    </h:panelGrid>
                 </h:form>
+
             </ui:define>
 
         </ui:composition>

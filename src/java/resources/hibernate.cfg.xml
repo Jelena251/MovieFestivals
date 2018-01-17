@@ -19,6 +19,11 @@ and open the template in the editor.
     <property name="show_sql">true</property>
     <property name="format_sql">true</property>
     <property name="use_sql_comments">true</property>
+    <property name="hibernate.c3p0.min_size">5</property>
+    <property name="hibernate.c3p0.max_size">20</property>
+    <property name="hibernate.c3p0.timeout">300</property>
+    <property name="hibernate.c3p0.max_statements">50</property>
+    <property name="hibernate.c3p0.idle_test_period">3000</property>
     <!-- transactions -->
     <property name="hibernate.transction.factory_class">org.hibernate.JDBCTrasactionFatory</property>
     <!-- mapping file location-->
@@ -26,8 +31,9 @@ and open the template in the editor.
     <mapping class="beans.Korisnik"/>
     <mapping class="beans.Zahtev"/>
     <mapping class="beans.Festival"/>
-    <mapping class="beans.Location"/>
-    <mapping class="beans.Movie"/>
     <mapping class="beans.Place"/>
+    <mapping class="beans.Projection"/>
+    <mapping class="Model.Movie"/>
+    <mapping class="Model.Location"/>
   </session-factory>
 </hibernate-configuration>
