@@ -2,14 +2,59 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <body>
 
         <ui:composition template="./templates/AdminTemplate.xhtml">
 
-            <ui:define name="content">
-                <p:outputLabel value="Welcome #{controller.username} administrator! Choose desired action from navigation menu!"/>
+            <ui:define name="content" >
+                <h1 style="align-content: center; color: black"> Unhandled Requests </h1>
+                <h:form>
+                    <p:dataTable var="z" value="#{userRequestController.zahtevi}"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                                 paginator="true" rows="10" style="margin-bottom:20px">
+                        <p:column headerText="Id">
+                            <h:outputText value="#{z.id}" />
+                        </p:column>
+                        <p:column headerText="Username">
+                            <h:outputText value="#{z.username}" />
+                        </p:column>
+                        <p:column headerText="Name">
+                            <h:outputText value="#{z.name}" />
+                        </p:column>
+                        <p:column headerText="Surname">
+                            <h:outputText value="#{z.surname}" />
+                        </p:column>
+                        <p:column headerText="Email">
+                            <h:outputText value="#{z.email}" />
+                        </p:column>
+                        <p:column headerText="Phone">
+                            <h:outputText value="#{z.phone}" />
+                        </p:column>
+                        <p:column headerText="Add As Admin">
+                            <h:commandLink value = "Admin" >
+                                <p:ajax event="click" update="@form" listener="#{userRequestController.approveRequest(z, 'admin')}"/>
+                            </h:commandLink>
+                        </p:column>
+                        <p:column headerText="Add As User">
+                            <h:commandLink value="User" >
+                                <p:ajax event="click" update="@form" listener="#{userRequestController.approveRequest(z, 'korisnik')}"/>
+                            </h:commandLink>
+                        </p:column>
+                        <p:column headerText="Add As Salesman">
+                            <h:commandLink value = "Salesman">
+                                <p:ajax event="click" update="@form" listener="#{userRequestController.approveRequest(z, 'prodavac')}"/>
+                            </h:commandLink>
+                        </p:column>
+                        <p:column headerText="Delete request">
+                            <h:commandLink value ="Delete" >
+                                <p:ajax event="click" update="@form" listener="#{userRequestController.removeRequest(z)}"/>
+                            </h:commandLink>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
             </ui:define>
 
         </ui:composition>
