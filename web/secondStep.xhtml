@@ -36,10 +36,11 @@
                 <f:convertDateTime pattern="yyyy-MM-dd"/>
             </h:selectOneMenu>
             <h:message for="date" style="color:red"/>
-
+            
             <h:outputText value="Time"/>
             <p:calendar id="time" value="#{festivalController.timeObj}" pattern="HH:mm" timeOnly="true" >
                 <f:convertDateTime pattern="HH:mm"/>
+                <p:ajax event="change" listener="#{festivalController.updateData()}"/>
             </p:calendar>
             <h:message for="time" style="color:red"/>
 
@@ -89,9 +90,7 @@
             <h:commandButton value="Cancel" onclick="addMovieDlg.hide()"/>
             <h:commandButton id="button" value="Save" action="#{festivalController.saveMovie()}" 
                              onclick="PF('addMovieDlg').hide();"/>
-            <h:messages for="button"/>
         </p:dialog>
-        <h:messages/>
     </h:body>
 </html>
 

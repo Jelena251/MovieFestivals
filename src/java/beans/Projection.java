@@ -9,6 +9,7 @@ import Model.Location;
 import Model.Movie;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -25,19 +26,19 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity(name = "projection")
 @Data
-public class Projection implements Serializable{
+public class Projection implements Serializable {
 
     @GenericGenerator(name = "kaugen", strategy = "increment")
     @GeneratedValue(generator = "kaugen")
     @Id
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "FESTIVAL_ID")
     private Festival festival;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MOVIE_ID")        
+    @JoinColumn(name = "MOVIE_ID")
     private Movie movie;
 
     Date date;
@@ -45,8 +46,7 @@ public class Projection implements Serializable{
 
     @OneToOne
     private Location location;
-    
-    private int availPlaces;
 
+    private int availPlaces;
 
 }

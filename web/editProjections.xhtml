@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./templates/AdminTemplate.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+                    <p:growl id="msgs" showDetail="true"/>
+
+                    <p:dataTable id="projs" var="proj" value="#{projectionController.projections}" editable="true" editMode="cell" widgetVar="cellProjs">
+                        <f:facet name="header">
+                            Projection Editing
+                        </f:facet>
+
+                        <p:ajax event="cellEdit" listener="#{projectionController.onCellEdit}" />
+
+                        <p:column headerText="Id">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{proj.id}" /></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Festival">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{proj.festival.name}" /></f:facet>
+                                <f:facet name="input">
+                                    <h:selectOneMenu value="#{proj.festival.name}">
+                                        <f:selectItems value="#{projectionController.festivals}" var="fest" itemValue="#{fest.name}" itemLabel="#{fest.name}"/>
+                                    </h:selectOneMenu>
+                                
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                    </p:dataTable>
+
+                    <p:contextMenu for="projs" widgetVar="cMenu">   
+                        <p:menuitem value="Edit Cell" icon="ui-icon-search" onclick="PF('cellProjs').showCellEditor();return false;"/>  
+                        <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>  
+                    </p:contextMenu> 
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -130,7 +130,11 @@ public class MainController {
                 break;
         }
     }
-
+    public void resetSteps(){
+        stepPage = "firstStep";
+        currentStep = 1;
+        isComplete = false;
+    }
     public String getStepPage() {
         return stepPage;
     }

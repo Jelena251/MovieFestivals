@@ -10,6 +10,7 @@ import Model.Movie;
 import beans.Festival;
 import beans.Place;
 import beans.Projection;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import org.hibernate.Transaction;
 @ManagedBean(name = "festivalController")
 @SessionScoped
 @Data
-public class FestivalContoller {
+public class FestivalContoller implements Serializable {
 
     private Festival festival;
 
@@ -83,24 +84,30 @@ public class FestivalContoller {
     }
 
     public void initializePlacesAndLocations() {
+
         Configuration cfg = new Configuration();
         cfg.configure("resources/hibernate.cfg.xml");
         SessionFactory sf = cfg.buildSessionFactory();
         Session s = sf.openSession();
-        Criteria criteria = s.createCriteria(Place.class);
-        places = criteria.list();
-        if (!places.isEmpty()) {
-            placeObj = places.get(0);
-            chosenPlace = placeObj.getId();
-            allLocations = placeObj.getLocations();
-            if (!allLocations.isEmpty()) {
-                locationObj = allLocations.get(0);
-                chosenLocation = locationObj.getId();
-            }
+        try {
+            Criteria criteria = s.createCriteria(Place.class);
+            places = criteria.list();
+            if (!places.isEmpty()) {
+                placeObj = places.get(0);
+                chosenPlace = placeObj.getId();
+                allLocations = placeObj.getLocations();
+                if (!allLocations.isEmpty()) {
+                    locationObj = allLocations.get(0);
+                    chosenLocation = locationObj.getId();
+                }
 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            s.close();
+            sf.close();
         }
-        s.close();
-        sf.close();
     }
 
     public void updatePlacesAndLocations() {
@@ -154,11 +161,16 @@ public class FestivalContoller {
             cfg.configure("resources/hibernate.cfg.xml");
             SessionFactory sf = cfg.buildSessionFactory();
             Session s = sf.openSession();
-            Transaction tx = s.beginTransaction();
-            s.save(movieObj);
-            tx.commit();
-            s.close();
-            sf.close();
+            try {
+                Transaction tx = s.beginTransaction();
+                s.save(movieObj);
+                tx.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                s.close();
+                sf.close();
+            }
 
             movies.add(movieObj);
             chosenMovie = movieObj.getTitle();
@@ -192,10 +204,15 @@ public class FestivalContoller {
         SessionFactory sf = cfg.buildSessionFactory();
 
         Session s = sf.openSession();
-        Criteria criteria = s.createCriteria(Movie.class);
-        movies = criteria.list();
-        s.close();
-        sf.close();
+        try {
+            Criteria criteria = s.createCriteria(Movie.class);
+            movies = criteria.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            s.close();
+            sf.close();
+        }
     }
 
     public void addProjection() {
@@ -205,15 +222,12 @@ public class FestivalContoller {
 
             FacesContext context = FacesContext.getCurrentInstance();
             context.addMessage(component.getClientId(), new FacesMessage("Projection for movie " + projection.getMovie().getTitle()
-                    + " on festival " + projection.getFestival().getName()
                     + " occuring on " + projection.getDate() + "is successfully added!"));
             projection = new Projection();
         }
     }
 
     public void initializeProjectionObject() {
-        //set festival
-        projection.setFestival(festival);
         //add movie to projection
         movieObj = fetchMovieObj();
         projection.setMovie(movieObj);
@@ -243,22 +257,28 @@ public class FestivalContoller {
     }
 
     public String addNewFestival() {
-        if(festival == null) return "";
+        if (festival == null) {
+            return "";
+        }
         Configuration cfg = new Configuration();
         cfg.configure("resources/hibernate.cfg.xml");
         SessionFactory sf = cfg.buildSessionFactory();
         Session s = sf.openSession();
-        Transaction tx = s.beginTransaction();
-        festival.setFestivalLocations(locations);
-
-        //save all projetions
-        for (Projection p : festival.getProjections()) {
-            s.save(p);
+        try {
+            Transaction tx = s.beginTransaction();
+            festival.setFestivalLocations(locations);
+            s.saveOrUpdate(festival);
+            for (Projection p : festival.getProjections()) {
+                p.setFestival(festival);
+                s.saveOrUpdate(p);
+            }
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            s.close();
+            sf.close();
         }
-        s.save(festival);
-        tx.commit();
-        s.close();
-        sf.close();
         festival = new Festival();
         locations = new LinkedList<>();
         return "";
@@ -268,7 +288,9 @@ public class FestivalContoller {
         List<String> dates = new ArrayList<>();
         LocalDate start = toLocalDate(festival.getStartDate());
         LocalDate end = toLocalDate(festival.getEndDate());
-        if(start == null || end ==null) return new LinkedList<>();
+        if (start == null || end == null) {
+            return new LinkedList<>();
+        }
         while (!start.equals(end)) {
             dates.add(start.toString());
             start = start.plusDays(1);
@@ -277,7 +299,9 @@ public class FestivalContoller {
     }
 
     public LocalDate toLocalDate(Date date) {
-        if(date == null) return null;
+        if (date == null) {
+            return null;
+        }
         Date lDate = new Date(date.getTime());
         return lDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }

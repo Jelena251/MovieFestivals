@@ -24,7 +24,9 @@
                 <ui:insert name="left" id="leftMenu">
                     <p:menu>
                         <p:menuitem value="Requests" url="administrator.xhtml"/>
-                        <p:menuitem value="Add Festival" url="addFestival.xhtml"/>
+                        <p:menuitem value="Add Festival" url="addFestival.xhtml">
+                            <p:ajax event="click" update="content" listener="#{controller.resetSteps()}"/>
+                        </p:menuitem>
                         <p:menuitem value="Add Place" url="addPlace.xhtml"/>
                         <p:menuitem value="Add Location" url="addLocation.xhtml"/>
                     </p:menu>

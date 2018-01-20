@@ -10,16 +10,21 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  *
@@ -39,23 +44,24 @@ public class Festival implements Serializable {
     private String name;
     private Date startDate;
     private Date endDate;
-    @OneToMany
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="FESTIVAL_LOCATIONS")
     private List<Location> festivalLocations;
     private String about;
-    @OneToMany(mappedBy = "festival")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "festival", cascade = {CascadeType.ALL})
     private List<Projection> projections;
     @Transient
     private String dateMessage;
-    
-    public Festival(){
-       projections = new LinkedList();
+
+    public Festival() {
+        projections = new LinkedList();
     }
-    
 
     public void setStartDate(Date startDate) {
         if (getEndDate() != null && startDate.after(getEndDate())) {
             dateMessage = "Start date not valid! Start date must be before end Date!";
-            this.startDate =null;
+            this.startDate = null;
         } else {
             dateMessage = "";
             this.startDate = startDate;
@@ -72,7 +78,7 @@ public class Festival implements Serializable {
         }
     }
 
-    public void addProjection(Projection p){
+    public void addProjection(Projection p) {
         this.projections.add(p);
     }
 }
