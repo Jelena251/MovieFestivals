@@ -18,11 +18,11 @@ import org.hibernate.annotations.GenericGenerator;
  *
  * @author user
  */
-
 @ManagedBean
-@Entity(name="korisnici")
+@Entity(name = "korisnici")
 @Data
-public class Korisnik implements Serializable{
+public class Korisnik implements Serializable {
+
     @GenericGenerator(name = "kaugen", strategy = "increment")
     @GeneratedValue(generator = "kaugen")
     @Id
@@ -38,7 +38,7 @@ public class Korisnik implements Serializable{
     private String email;
     private String role;
 
-    public Korisnik(Zahtev zahtev, String role){
+    public Korisnik(Zahtev zahtev, String role) {
         this.name = zahtev.getName();
         this.surname = zahtev.getSurname();
         this.username = zahtev.getUsername();
@@ -46,5 +46,9 @@ public class Korisnik implements Serializable{
         this.phone = zahtev.getPhone();
         this.email = zahtev.getEmail();
         this.role = role;
+    }
+
+    public String toString() {
+        return username;
     }
 }

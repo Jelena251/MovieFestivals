@@ -14,36 +14,87 @@
                 <h:form>
                     <p:growl id="msgs" showDetail="true"/>
 
-                    <p:dataTable id="projs" var="proj" value="#{projectionController.projections}" editable="true" editMode="cell" widgetVar="cellProjs">
+                    <p:dataTable id="projs" var="proj" value="#{projectionController.projections}" editable="true">
                         <f:facet name="header">
                             Projection Editing
                         </f:facet>
 
-                        <p:ajax event="cellEdit" listener="#{projectionController.onCellEdit}" />
+                        <p:ajax event="rowEdit" update="@this" listener="#{projectionController.onRowEdit}" />
+                        <p:ajax event="rowEditCancel" update="@this" listener="#{projectionController.onRowCancel}"  />
 
                         <p:column headerText="Id">
                             <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{proj.id}" /></f:facet>
+                                <f:facet name="input"><h:outputText value="#{proj.id}" /></f:facet>
                             </p:cellEditor>
                         </p:column>
 
                         <p:column headerText="Festival">
                             <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{proj.festival.name}" /></f:facet>
+                                <f:facet name="input"><h:outputText value="#{proj.festival.name}" /></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Movie">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{proj.movie.title}" /></f:facet>
+                                <f:facet name="input"><h:outputText value="#{proj.movie.title}" /></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Date">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{projectionController.toLocalDate(proj.date)}" /></f:facet>
                                 <f:facet name="input">
-                                    <h:selectOneMenu value="#{proj.festival.name}">
-                                        <f:selectItems value="#{projectionController.festivals}" var="fest" itemValue="#{fest.name}" itemLabel="#{fest.name}"/>
+                                    <h:selectOneMenu value="#{projectionController.projDate}">
+                                        <f:selectItems value="#{projectionController.allDatesInPeriod(proj)}" noSelectionValue="#{projectionController.toLocalDate(proj.date)}"/>
+                                        <p:ajax event="change"  listener="#{projectionController.updateData()}"/>
+                                        <f:convertDateTime pattern="yyyy-MM-dd"/>
                                     </h:selectOneMenu>
-                                
                                 </f:facet>
                             </p:cellEditor>
                         </p:column>
+
+                        <p:column headerText="Time">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{proj.date.hours}:#{proj.date.minutes}" /></f:facet>
+                                <f:facet name="input">
+                                    <p:calendar id="maskTime" value="#{proj.date}" pattern="hh:mm" mask="true">
+                                    </p:calendar>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Location">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{proj.location.name}" /></f:facet>
+                                <f:facet name="input">
+                                    <h:selectOneMenu value="#{projectionController.locationId}">
+                                        <f:selectItems value="#{proj.festival.festivalLocations}" noSelectionValue="#{proj.location.name}" var="loc" itemValue="#{loc.id}" itemLabel="#{loc.name}"/>
+                                        <p:ajax event="change" update="halls" listener="#{projectionController.updateLocation(proj)}"/>
+                                    </h:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Hall">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{proj.sala}" /></f:facet>
+                                <f:facet name="input">
+                                    <h:selectOneMenu value="#{projectionController.sala}"  id="halls">
+                                        <f:selectItems value="#{projectionController.fetchAllHalls(proj)}" noSelectionValue="#{projectionController.noSellectionHallValue(proj)}"/>
+                                        <p:ajax event="change" listener="#{projectionController.updateData()}"/>
+                                    </h:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column style="width:32px">
+                            <p:rowEditor />
+                        </p:column>
                     </p:dataTable>
 
-                    <p:contextMenu for="projs" widgetVar="cMenu">   
-                        <p:menuitem value="Edit Cell" icon="ui-icon-search" onclick="PF('cellProjs').showCellEditor();return false;"/>  
-                        <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>  
-                    </p:contextMenu> 
+
                 </h:form>
             </ui:define>
 

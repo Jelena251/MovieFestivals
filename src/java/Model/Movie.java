@@ -46,5 +46,7 @@ public class Movie implements Serializable {
     public UIComponent getComponent() {
         return component;
     }
-
+    public String toString(){
+        return title;
+    }
 }

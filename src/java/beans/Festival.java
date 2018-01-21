@@ -44,8 +44,10 @@ public class Festival implements Serializable {
     private String name;
     private Date startDate;
     private Date endDate;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="FESTIVAL_LOCATIONS")
+    @JoinColumn(name = "FESTIVAL_LOCATIONS")
     private List<Location> festivalLocations;
     private String about;
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -80,5 +82,9 @@ public class Festival implements Serializable {
 
     public void addProjection(Projection p) {
         this.projections.add(p);
+    }
+
+    public String toString() {
+        return name;
     }
 }

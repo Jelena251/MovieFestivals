@@ -19,6 +19,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  *
@@ -36,8 +38,9 @@ public class Projection implements Serializable {
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "FESTIVAL_ID")
     private Festival festival;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToOne
     @JoinColumn(name = "MOVIE_ID")
     private Movie movie;
 
@@ -48,5 +51,9 @@ public class Projection implements Serializable {
     private Location location;
 
     private int availPlaces;
+    
+        public String toString(){
+        return movie + "("+festival+")";
+    }
 
 }

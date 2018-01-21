@@ -39,4 +39,8 @@ public class Location implements Serializable{
     @ManyToOne
     @JoinColumn(name = "place_id")
     private Place place;
+    
+    public String toString(){
+        return name + "("+place+")";
+    }
 }

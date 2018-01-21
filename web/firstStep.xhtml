@@ -17,7 +17,7 @@
                 <p:ajax listener="#{festivalController.updateData()}" event="change" update="@this, nameMessage"/>
             </h:inputText>
             <p:message for="name" id="nameMessage"/>
-            
+
             <h:outputText value="Place"/>
             <h:selectOneMenu id="placeSelection" value="#{festivalController.chosenPlace}">
                 <f:selectItems value="#{festivalController.places}" var = "p" itemValue="#{p.id}" itemLabel="#{p.name}"/>
@@ -52,18 +52,24 @@
             </h:dataTable>
             <br/>
             <h:outputText value="Start Date" />
-            <p:calendar id="startDate" value="#{festivalController.festival.startDate}" pattern="MM/dd/yyyy">
-                <p:ajax listener="#{festivalController.updateData()}" event="dateSelect" update="@this, startDateMessage"/>
+            <p:calendar id="startDate" value="#{festivalController.festival.startDate}" pattern="MM/dd/yyyy" required="true" requiredMessage="The start date is mandatory">
+                <p:ajax listener="#{festivalController.updateData()}" event="dateSelect" update="@this, startDateMessage, stDateMessage"/>
                 <f:convertDateTime pattern="MM/dd/yyyy"/>
             </p:calendar>
-            <h:outputText id="startDateMessage" value="#{festivalController.festival.dateMessage}" style="color:red"/>
+            <h:panelGroup>
+                <h:outputText id="startDateMessage" value="#{festivalController.festival.dateMessage}" style="color:red"/>
+               <p:message for="startDate" id="stDateMessage"/>
+            </h:panelGroup>
 
             <h:outputText value="End Date" />
-            <p:calendar id="endDate" value="#{festivalController.festival.endDate}" pattern="MM/dd/yyyy">
-                <p:ajax listener="#{festivalController.updateData()}" event="dateSelect" update="@this, endDateMessage"/>
+            <p:calendar id="endDate" value="#{festivalController.festival.endDate}" pattern="MM/dd/yyyy"  required="true" requiredMessage="The end date is mandatory">
+                <p:ajax listener="#{festivalController.updateData()}" event="dateSelect" update="@this, endDateMessage, enDateMessage"/>
                 <f:convertDateTime pattern="MM/dd/yyyy"/>
             </p:calendar>
-            <h:outputText id="endDateMessage" value="#{festivalController.festival.dateMessage}" style="color:red"/>
+            <h:panelGroup>
+                <h:outputText id="endDateMessage" value="#{festivalController.festival.dateMessage}" style="color:red"/>
+                <p:message for="endDate" id="enDateMessage"/>
+            </h:panelGroup>
 
             <h:outputText value="Description" />
             <h:inputText id="details" value="#{festivalController.festival.about}">

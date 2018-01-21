@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -24,49 +25,25 @@ import org.hibernate.annotations.LazyCollectionOption;
  */
 @ManagedBean
 @Entity(name = "places")
+@Data
 public class Place implements Serializable {
 
     @GenericGenerator(name = "kaugen", strategy = "increment")
     @GeneratedValue(generator = "kaugen")
     @Id
     private int id;
-    @Column(unique=true)
+    @Column(unique = true)
     private String name;
     @OneToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Location> locations;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
+    public String toString() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public String toString(){
-        return name;
-    }
-
-    public List<Location> getLocations() {
-        return locations;
-    }
-
-    public void setLocations(List<Location> locations) {
-        this.locations = locations;
-    }
-    
-    public void addLocation(Location l){
+    public void addLocation(Location l) {
         locations.add(l);
     }
-    
-    
+
 }

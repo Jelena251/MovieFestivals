@@ -26,6 +26,7 @@ import lombok.Data;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.RowEditEvent;
@@ -42,9 +43,6 @@ public class ProjectionController {
     private List<Projection> projections;
     private Projection projection;
 
-    private List<Festival> festivals;
-    private List<Movie> movies;
-
     private int festivalId;
     private Festival festival;
     private List<Location> locations;
@@ -58,8 +56,6 @@ public class ProjectionController {
 
     public ProjectionController() {
         populateProjectionList();
-        populateFestivalList();
-        populateMovieList();
     }
 
     public void populateProjectionList() {
@@ -67,41 +63,58 @@ public class ProjectionController {
         cfg.configure("resources/hibernate.cfg.xml");
         SessionFactory sf = cfg.buildSessionFactory();
         Session s = sf.openSession();
+        try {
+            Criteria criteria = s.createCriteria(Projection.class);
+            projections = criteria.list();
 
-        Criteria criteria = s.createCriteria(Projection.class);
-        projections = criteria.list();
-
-        s.close();
-        sf.close();
-    }
-
-    public void populateFestivalList() {
-        Configuration cfg = new Configuration();
-        cfg.configure("resources/hibernate.cfg.xml");
-        SessionFactory sf = cfg.buildSessionFactory();
-        Session s = sf.openSession();
-
-        Criteria criteria = s.createCriteria(Festival.class);
-        festivals = criteria.list();
-
-        s.close();
-        sf.close();
-    }
-
-    public void populateMovieList() {
-        Configuration cfg = new Configuration();
-        cfg.configure("resources/hibernate.cfg.xml");
-        SessionFactory sf = cfg.buildSessionFactory();
-        Session s = sf.openSession();
-
-        Criteria criteria = s.createCriteria(Movie.class);
-        movies = criteria.list();
-
-        s.close();
-        sf.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            s.close();
+            sf.close();
+        }
     }
 
     public void onRowEdit(RowEditEvent event) {
+        DataTable o = (DataTable) event.getSource();
+        Projection projection = (Projection) o.getRowData();
+        String updateQuerryString = "update Projection ";
+/*
+        Query query = session.createQuery("update Stock set stockName = :stockName" +
+    				" where stockCode = :stockCode");
+query.setParameter("stockName", "DIALOG1");
+query.setParameter("stockCode", "7277");
+int result = query.executeUpdate();
+        */
+        if (locationObj != null) {
+            projection.setLocation(locationObj);
+            locationObj = null;
+        }
+        if (sala != null) {
+            projection.setSala(sala);
+            sala = null;
+        }
+
+        if (projDate != null) {
+            Date date = projection.getDate();
+            if (date != null) {
+                projDate.setHours(date.getHours());
+                projDate.setMinutes(date.getMinutes());
+            }
+            projection.setDate(projDate);
+            projDate = null;
+        }
+       
+
+        try {
+            addToDatabase(projection);
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesMessage msg = new FacesMessage("Error occured on database save!");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+
+        //Send a confirm message
         FacesMessage msg = new FacesMessage("Projection Edited");
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
@@ -112,43 +125,26 @@ public class ProjectionController {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
-    public void onCellEdit(CellEditEvent event) {
-        
-        
-		TreeTableColumn col= event.getTableColumn();
-		DataTable o=(DataTable) event.getSource();
-		Object oldValue = event.getOldValue();  //here i get old value
-		Object newValue = event.getNewValue(); //new value
-		Projection info=(Projection)o.getRowData();
-		int newProj=info.getId();//primary key
-
-        if (newValue != null && !newValue.equals(oldValue)) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Old: " + oldValue + ", New:" + newValue);
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+    public void addToDatabase(Projection p) throws Exception {
+        Configuration cfg = new Configuration();
+        cfg.configure("resources/hibernate.cfg.xml");
+        SessionFactory sf = cfg.buildSessionFactory();
+        Session s = sf.openSession();
+        try {
+            Transaction tx = s.beginTransaction();
+            s.saveOrUpdate(p);
+            tx.commit();
+            System.out.println("Projection updated!!");
+        } catch (Exception e) {
+            throw (e);
+        } finally {
+            s.close();
+            sf.close();
         }
     }
 
-    public void updateFestivalData() {
-        if (festivalId == 0) {
-            return;
-        }
-        festival = festivals.stream()
-                .filter(f -> f.getId() == festivalId)
-                .findFirst()
-                .orElse(null);
-        if (festival != null) {
-            locations = festival.getFestivalLocations();
-            if (locations != null && !locations.isEmpty()) {
-                locationObj = locations.get(0);
-                locationId = locationObj.getId();
-                sale = locations.get(0).getSale();
-                sala = (sale != null) ? sale.get(0) : null;
-            }
-
-        }
-    }
-
-    public List<String> allDatesInPeriod() {
+    public List<String> allDatesInPeriod(Projection proj) {
+        Festival festival = proj.getFestival();
         List<String> dates = new ArrayList<>();
         if (festival != null) {
             LocalDate start = toLocalDate(festival.getStartDate());
@@ -177,5 +173,44 @@ public class ProjectionController {
             projDate.setHours(timeObj.getHours());
             projDate.setMinutes(timeObj.getMinutes());
         }
+    }
+
+    public void updateLocation(Projection p) {
+        locationObj = null;
+        if (p.getFestival() != null) {
+            List<Location> festLoc = p.getFestival().getFestivalLocations();
+            if (festLoc != null && !festLoc.isEmpty()) {
+                locationObj = festLoc.stream()
+                        .filter(l -> l.getId() == locationId)
+                        .findFirst()
+                        .orElse(null);
+            }
+        }
+
+    }
+
+    public List<String> fetchAllHalls(Projection p) {
+        if (locationObj != null) {
+            return locationObj.getSale();
+        } else {
+            return p.getLocation() != null ? p.getLocation().getSale() : null;
+        }
+    }
+
+    public String noSellectionHallValue(Projection p) {
+        List<String> sale;
+        if (locationObj != null) {
+            sale = locationObj.getSale();
+            if (sale != null && !sale.isEmpty()) {
+                return sale.get(0);
+            }
+        } else {
+            return p.getSala();
+        }
+        return null;
+    }
+
+    public void updateData() {
+
     }
 }

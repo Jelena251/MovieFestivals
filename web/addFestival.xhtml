@@ -55,7 +55,9 @@
                     <p:commandButton value="Next" disabled = "#{controller.isComplete}" id="nextButton" action = "#{festivalController.updateData()}">
                         <p:ajax update="stepContent,stepC, @this, completeButton " listener="#{controller.nextStep()}" event="click"/>
                     </p:commandButton>
-                    <p:commandButton value="Complete" disabled = "#{!controller.isComplete}" id="completeButton" action="#{festivalController.addNewFestival()}"/>
+                    <p:commandButton value="Complete" disabled = "#{!controller.isComplete}" id="completeButton" action="#{festivalController.addNewFestival()}" >
+                        <p:ajax update="stepContent,stepC, @this, nextButton " listener="#{controller.resetSteps()}" event="click"/>
+                    </p:commandButton>
                 </h:form>
 
             </ui:define>

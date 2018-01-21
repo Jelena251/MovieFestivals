@@ -53,7 +53,7 @@
             <p:ajax event="click" update="messageProj" listener="#{festivalController.addProjection()}"/>
         </p:commandButton>
         <p:message for="addProjectionButton" id="messageProj" />
-        <p:dialog widgetVar="addMovieDlg" modal="true">
+        <p:dialog widgetVar="addMovieDlg">
             <p:panelGrid columns="2">
                 <h:outputText value="Title"/>
                 <p:inputText value="#{festivalController.movieObj.title}" />

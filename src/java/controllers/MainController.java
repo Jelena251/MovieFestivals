@@ -9,6 +9,7 @@ import Model.Location;
 import beans.Korisnik;
 import beans.Place;
 import constants.ConstantData;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ import org.hibernate.criterion.Restrictions;
  */
 @ManagedBean(name = "controller")
 @SessionScoped
-public class MainController {
+public class MainController implements Serializable{
 
     private String username;
     private String password;
