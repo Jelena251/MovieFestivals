@@ -1,3 +1,5 @@
-/build
-/nbproject
+build/
+nbproject/
+dist/
+bin/
 *.class

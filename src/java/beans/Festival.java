@@ -87,4 +87,13 @@ public class Festival implements Serializable {
     public String toString() {
         return name;
     }
+
+    public String locationsString() {
+        String s = "";
+        for (Location l : festivalLocations) {
+            s = s + l.toString() + '\n';
+        }
+
+        return s;
+    }
 }
