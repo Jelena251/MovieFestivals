@@ -1,12 +1,136 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
-    <h:head>
-        <title>Facelet Title</title>
-    </h:head>
-    <h:body>
-        Korisnik
-    </h:body>
-</html>
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
+    <body>
+
+        <ui:composition template="./templates/UserTemplate.xhtml">
+
+            <ui:define name="content">
+                <h:form title="Search For Festivals">
+                    <h:panelGrid columns="3">
+                        <h:outputText value="Festival Name"/>
+                        <h:inputText value="#{userController.name}" id="festivalName">
+                            <p:ajax event="change" listener="#{userController.updateData()}"/>
+                        </h:inputText>
+                        <h:message for="festivalName"/>
+                        <h:outputText value="From" />
+                        <p:calendar id="startDate" value="#{userController.startDate}" mindate="#{userController.currentDate}" pattern="MM/dd/yyyy">
+                            <p:ajax listener="#{userController.updateData()}" event="dateSelect" update="@this, startDateMessage"/>
+                            <f:convertDateTime pattern="MM/dd/yyyy"/>
+                        </p:calendar>
+                        <h:outputText id="startDateMessage" value="#{userController.dateMessage}" style="color:red"/>
+
+
+                        <h:outputText value="End Date" />
+                        <p:calendar id="endDate" value="#{userController.endDate}" mindate="#{userController.currentDate}" pattern="MM/dd/yyyy">
+                            <p:ajax listener="#{userController.updateData()}" event="dateSelect" update="@this, endDateMessage"/>
+                            <f:convertDateTime pattern="MM/dd/yyyy"/>
+                        </p:calendar>
+                        <h:outputText id="endDateMessage" value="#{userController.dateMessage}" style="color:red"/>
+
+                        <h:outputText value="Movie Original Title" />
+                        <h:inputText id="movieTitle" value="#{userController.movieTitle}" >
+                            <p:ajax listener="#{userController.updateData()}" event="change" update="@this, titleMsg"/>
+                        </h:inputText>
+
+                        <h:message for="movieTitle" id="titleMsg"/>
+
+                    </h:panelGrid>
+                    <p:commandButton value="Search">
+                        <p:ajax update="resultForm, startDate, endDate, festivalName" event="click" listener="#{userController.search()}"/>
+                    </p:commandButton>
+                </h:form>
+
+                <h:form id="resultForm">
+                    <c:if test="#{not empty userController.festivalResults}">
+                        <p:dataTable var="rez" value="#{userController.festivalResults}"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                                     paginator="true" rows="10" style="margin-bottom:20px" id="resultFestivals"
+                                     >
+
+                            <f:facet name="header">
+                                Results
+                            </f:facet>
+
+                            <p:column headerText="Name">
+                                <h:outputText value="#{rez.name}" />
+                            </p:column>
+                            <p:column headerText="StartDate">
+                                <h:outputText value="#{rez.startDate}" />
+                            </p:column>
+                            <p:column headerText="End Date">
+                                <h:outputText value="#{rez.endDate}" />
+                            </p:column>
+                            <p:column headerText="Locations">
+                                <h:outputText value="#{rez.locationsString()}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </c:if>
+                    <c:if test="#{not empty userController.results}">
+                        <p:dataTable var="rez" value="#{userController.results}"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                                     paginator="true" rows="10" style="margin-bottom:20px" id="resultFestivals"
+                                     >
+
+                            <f:facet name="header">
+                                Results
+                            </f:facet>
+
+                            <p:column headerText="Festival Name">
+                                <h:outputText value="#{rez.festival.name}" />
+                            </p:column>
+                            
+                            <p:column headerText="Movie">
+                                <h:outputText value="#{rez.movie.originalTitle}"/>
+                            </p:column>
+                            <p:column headerText="Projection Date">
+                                <h:outputText value="#{rez.date}" />
+                            </p:column>
+                            <p:column headerText="Location">
+                                <h:outputText value="#{rez.location.name}"/>
+                            </p:column>
+                            <p:column headerText="Hall">
+                                <h:outputText value="#{rez.sala}"/>
+                            </p:column>
+                             <p:column headerText="Available Places">
+                                <h:outputText value="#{rez.availPlaces}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </c:if>
+                    <c:if test="#{(empty userController.results) and (empty userController.festivalResults) }">
+                        <p:dataTable var="rez" value="#{userController.mostRecent}" id="recentFestivals">
+
+                            <f:facet name="header">
+                                Most Recent Festivals
+                            </f:facet>
+
+                            <p:column headerText="Name">
+                                <h:outputText value="#{rez.name}" />
+                            </p:column>
+                            <p:column headerText="StartDate">
+                                <h:outputText value="#{rez.startDate}" />
+                            </p:column>
+                            <p:column headerText="End Date">
+                                <h:outputText value="#{rez.endDate}" />
+                            </p:column>
+                            <p:column headerText="Locations">
+                                <h:outputText value="#{rez.locationsString()}"/>
+                            </p:column>
+                            <p:column>
+                                <h:commandButton value="Details" action ="#{details.showFestivalDetails(rez)}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </c:if>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
