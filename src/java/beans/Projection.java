@@ -38,7 +38,7 @@ public class Projection implements Serializable {
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "FESTIVAL_ID")
     private Festival festival;
-    
+
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToOne
     @JoinColumn(name = "MOVIE_ID")
@@ -51,9 +51,10 @@ public class Projection implements Serializable {
     private Location location;
 
     private int availPlaces;
-    
-        public String toString(){
-        return movie + "("+festival+")";
+    private double price;
+
+    public String toString() {
+        return movie + "(" + festival + ")";
     }
 
 }

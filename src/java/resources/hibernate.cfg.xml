@@ -35,5 +35,6 @@ and open the template in the editor.
     <mapping class="beans.Projection"/>
     <mapping class="Model.Movie"/>
     <mapping class="Model.Location"/>
+    <mapping class="Model.Reservation"/>
   </session-factory>
 </hibernate-configuration>

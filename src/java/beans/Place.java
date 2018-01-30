@@ -37,6 +37,8 @@ public class Place implements Serializable {
     @OneToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Location> locations;
+    private Double longitude;
+    private Double latitude;
 
     public String toString() {
         return name;

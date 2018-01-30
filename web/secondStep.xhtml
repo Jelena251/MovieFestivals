@@ -17,7 +17,7 @@
             <p:commandButton value="Add new" type="button" onclick="PF('addMovieDlg').show();">
                 <p:ajax event="dialogReturn" listener="#{festivalController.updateMovies()}" update="selectionMenu"/>
             </p:commandButton>
-            
+
             <h:outputText value="Location"/>
             <h:selectOneMenu value="#{festivalController.chosenLocation}" id="locSelect">
                 <f:selectItems value="#{festivalController.locations}" var="l" itemValue="#{l.id}" itemLabel="#{l.name}"/>
@@ -36,7 +36,7 @@
                 <f:convertDateTime pattern="yyyy-MM-dd"/>
             </h:selectOneMenu>
             <h:message for="date" style="color:red"/>
-            
+
             <h:outputText value="Time"/>
             <p:calendar id="time" value="#{festivalController.timeObj}" pattern="HH:mm" timeOnly="true" >
                 <f:convertDateTime pattern="HH:mm"/>
@@ -45,9 +45,16 @@
             <h:message for="time" style="color:red"/>
 
             <h:outputText value="Available Places"/>
-            <p:inputText value="#{festivalController.projection.availPlaces}" converter="javax.faces.Integer" id="places"/>
-            <h:message for="places" style="color:red"/>
+            <p:inputText value="#{festivalController.projection.availPlaces}" converter="javax.faces.Integer" id="places">
+                <p:ajax listener="#{festivalController.updateData()}" event="change" update="@this, avPlaceMsg"/> 
+            </p:inputText>
+            <h:message for="places" style="color:red" id="avPlaceMsg"/>
 
+            <h:outputText value="Price" />
+            <h:inputText id="price" value="#{festivalController.projection.price}" converter="javax.faces.double">
+                <p:ajax listener="#{festivalController.updateData()}" event="change" update="@this, priceMessage"/>    
+            </h:inputText>
+            <h:message for="details" style ="color:red" id="priceMessage"/>
         </h:panelGrid>
         <p:commandButton value = "Add Projection"  id="addProjectionButton" binding="#{festivalController.component}">
             <p:ajax event="click" update="messageProj" listener="#{festivalController.addProjection()}"/>

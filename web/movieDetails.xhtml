@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./templates/UserTemplate.xhtml">
+
+            <ui:define name="content">
+                <p:growl id="message" showDetail="true" />
+                <h:form>
+                    <div id="movieTitleDiv">
+                        <h:outputText id="movieTitle" value="#{movieDetails.chosenMovie.title}"/>
+                    </div>
+                    <div id="movieOrigTitleDiv">
+                        <h:outputText id="movieOrigTitle" value="#{movieDetails.chosenMovie.originalTitle}"/>
+                    </div>
+                    <div id="movieYearDiv">
+                        <h:outputText id="movieYear" value="#{movieDetails.chosenMovie.year}"/>
+                    </div>
+
+                    <div id="movieContentDiv">
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Description:"/>
+                            <h:outputText value="#{movieDetails.chosenMovie.summary}"/>
+
+                            <h:outputText value="Producer"/>
+                            <h:outputText value="#{movieDetails.chosenMovie.director}"/>
+
+                            <h:outputText value="Actors:"/>
+                            <h:outputText value="#{movieDetails.chosenMovie.actors}"/>
+
+                            <h:outputText value="Duration:"/>
+                            <h:outputText value="#{movieDetails.chosenMovie.runtime}"/>
+
+                            <h:outputText value="Country:"/>
+                            <h:outputText value="#{movieDetails.chosenMovie.countries}"/>
+
+
+                        </h:panelGrid>
+                    </div>
+                    <div id="festivals">
+                        <p:dataTable  value="#{movieDetails.projections}" var="rez"
+                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                                      paginator="true" rows="10" style="margin-bottom:20px" id="projectionFestivals"
+                                      >
+                            <f:facet name="header">
+                                Festivals with projections for this movie
+                            </f:facet>
+
+                            <p:column headerText="Festival">
+                                <h:commandLink value="#{rez.festival.name}" action="#{festDetails.showFestivalDetails(rez.festival)}"/>
+                            </p:column>
+                            <p:column headerText="Locations">
+                                <h:outputText value="#{rez.location}"/>
+                            </p:column>
+                            <p:column headerText="Price">
+                                <h:outputText value="#{rez.price}"/>
+                            </p:column>
+                            <p:column headerText="Date">
+                                <h:outputText value="#{rez.date}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </div>
+                    <div id="resDlgBtn">
+                        <p:commandButton value="Reserve" onclick="PF('reservationDlg').show();"/>
+                    </div>   
+
+
+                </h:form>
+                
+                    <p:dialog widgetVar="reservationDlg">
+                        <h:form>
+                        <p:dataTable var="rez" value="#{movieDetails.projections}"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                                     paginator="true" rows="10" style="margin-bottom:20px" id="regDlgProj"
+                                     >
+                            <f:facet name="header">
+                                Projections for #{movieDetails.chosenMovie.title} 
+                            </f:facet>
+
+                            <p:column headerText="Date and Time">
+                                <h:outputText value="#{rez.date}"/>
+                            </p:column>
+                            <p:column headerText="Location">
+                                <h:outputText value="#{rez.location}"/>
+                            </p:column>
+                            <p:column headerText="Hall">
+                                <h:outputText value="#{rez.sala}"/>
+                            </p:column>
+                            <p:column headerText="Available Places">
+                                <h:outputText value="#{rez.availPlaces}"/>
+                            </p:column>
+
+                            <p:column headerText="Number Of Tickets">
+                                <h:selectOneMenu value="#{reservationController.ticketNumber}">
+                                    <f:selectItems value="#{reservationController.getSelectValues(rez.festival.maxNum)}"/>
+                                </h:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <h:commandButton value="Reserve" action="#{reservationController.reserveFestival(rez, controller.logedInUser)}" onclick="PF('reservationDlg').hide()"/>
+                            </p:column>
+                        </p:dataTable>
+                        <h:commandButton value="Cancel" onclick="reservationDlg.hide()"/>
+                        </h:form>
+                    </p:dialog>
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

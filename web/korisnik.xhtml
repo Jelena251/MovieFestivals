@@ -70,6 +70,9 @@
                             <p:column headerText="Locations">
                                 <h:outputText value="#{rez.locationsString()}"/>
                             </p:column>
+                            <p:column headerText="Details">
+                                <h:commandButton value="Details" action="#{festDetails.showFestivalDetails(rez)}"/>
+                            </p:column>
                         </p:dataTable>
                     </c:if>
                     <c:if test="#{not empty userController.results}">
@@ -83,11 +86,11 @@
                             </f:facet>
 
                             <p:column headerText="Festival Name">
-                                <h:outputText value="#{rez.festival.name}" />
+                                <h:commandLink value="#{rez.festival.name}" action="#{festDetails.showFestivalDetails(rez.festival)}"/>
                             </p:column>
                             
                             <p:column headerText="Movie">
-                                <h:outputText value="#{rez.movie.originalTitle}"/>
+                                <h:commandLink value="#{rez.movie.originalTitle}" action="#{movieDetails.showMovieDetails(rez.movie)}"/>
                             </p:column>
                             <p:column headerText="Projection Date">
                                 <h:outputText value="#{rez.date}" />
@@ -98,7 +101,7 @@
                             <p:column headerText="Hall">
                                 <h:outputText value="#{rez.sala}"/>
                             </p:column>
-                             <p:column headerText="Available Places">
+                            <p:column headerText="Available Places">
                                 <h:outputText value="#{rez.availPlaces}"/>
                             </p:column>
                         </p:dataTable>
@@ -122,8 +125,8 @@
                             <p:column headerText="Locations">
                                 <h:outputText value="#{rez.locationsString()}"/>
                             </p:column>
-                            <p:column>
-                                <h:commandButton value="Details" action ="#{details.showFestivalDetails(rez)}"/>
+                            <p:column headerText="Details">
+                                <h:commandButton value="Details" action="#{festDetails.showFestivalDetails(rez)}"/>
                             </p:column>
                         </p:dataTable>
                     </c:if>

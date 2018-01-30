@@ -58,7 +58,7 @@
             </p:calendar>
             <h:panelGroup>
                 <h:outputText id="startDateMessage" value="#{festivalController.festival.dateMessage}" style="color:red"/>
-               <p:message for="startDate" id="stDateMessage"/>
+                <p:message for="startDate" id="stDateMessage"/>
             </h:panelGroup>
 
             <h:outputText value="End Date" />
@@ -70,6 +70,12 @@
                 <h:outputText id="endDateMessage" value="#{festivalController.festival.dateMessage}" style="color:red"/>
                 <p:message for="endDate" id="enDateMessage"/>
             </h:panelGroup>
+
+            <h:outputText value="Max Number Of Reservations" />
+            <h:inputText id="price" value="#{festivalController.festival.maxNum}" converter="javax.faces.Integer">
+                <p:ajax listener="#{festivalController.updateData()}" event="change" update="@this,mnMessage"/>    
+            </h:inputText>
+            <h:message for="details" style ="color:red" id="mnMessage"/>
 
             <h:outputText value="Description" />
             <h:inputText id="details" value="#{festivalController.festival.about}">

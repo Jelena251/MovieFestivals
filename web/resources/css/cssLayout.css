@@ -44,6 +44,7 @@
     left: 13%;
     background-color: #AFAFAF;
     width:80%;
+    overflow-y: auto;
 }
 
 #content_guest{

@@ -14,10 +14,10 @@ import lombok.Data;
  *
  * @author user
  */
-@ManagedBean(name = "details")
+@ManagedBean(name = "festDetails")
 @Data
 public class FestivalDetailsController implements Serializable {
-    Festival chosenFestival;
+    private Festival chosenFestival;
     
     public String showFestivalDetails(Festival festival){
         chosenFestival = festival;

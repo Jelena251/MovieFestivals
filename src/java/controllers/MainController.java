@@ -45,7 +45,7 @@ public class MainController implements Serializable{
     private boolean isComplete = false;
     private List<String> sale;
     private String sala;
-
+    
     public MainController() {
         sale = new LinkedList();
     }
@@ -180,6 +180,7 @@ public class MainController implements Serializable{
         }
         return "index ";
     }
+    
 
     public String changePassword() {
         String address = "confirmPassword";

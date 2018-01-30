@@ -37,6 +37,7 @@ public class Korisnik implements Serializable {
     private String phone;
     private String email;
     private String role;
+    private boolean isBlocked;
 
     public Korisnik(Zahtev zahtev, String role) {
         this.name = zahtev.getName();

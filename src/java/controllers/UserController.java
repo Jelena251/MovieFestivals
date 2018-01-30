@@ -34,7 +34,7 @@ import org.hibernate.criterion.Subqueries;
 @ManagedBean
 @Data
 @ViewScoped
-public class UserController implements Serializable{
+public class UserController implements Serializable {
 
     private String name;
     private String resultMsg;
@@ -108,7 +108,7 @@ public class UserController implements Serializable{
 
     public void search() {
         results = null;
-        festivalResults=null;
+        festivalResults = null;
         Configuration cfg = new Configuration();
         cfg.configure("resources/hibernate.cfg.xml");
         SessionFactory sf = cfg.buildSessionFactory();

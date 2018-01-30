@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./templates/UserTemplate.xhtml">
+
+
+            <ui:define name="content">
+                <div id="titleDiv">
+                    <h:outputText id="festivalTitle" value="Festival #{festDetails.chosenFestival.name}"/><br/>
+                    <h:outputText id="festivalDate" value="#{festDetails.chosenFestival.dateString()}"/>
+                </div>
+                <div id="locations">
+                    <h:outputText id="locationsFest" value="#{festDetails.chosenFestival.locationHallsString()}"/>
+                </div>
+                <div id="Informations">
+                    <h:outputText id="informationFest" value="#{festDetails.chosenFestival.about}"/>
+                </div>
+                <div id="Map">
+                </div>
+                <div id="Projections">
+                    <h:form>
+                        <p:dataTable var="rez" value="#{festDetails.chosenFestival.projections}"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                                     paginator="true" rows="10" style="margin-bottom:20px" id="projectionFestivals"
+                                     >
+
+                            <f:facet name="header">
+                                Festival Projections
+                            </f:facet>
+
+                            <p:column headerText="Movie">
+                                <h:commandLink value="#{rez.movie.originalTitle}" action="#{movieDetails.showMovieDetails(rez.movie)}"/>
+                            </p:column>
+                            <p:column headerText="Projection Date">
+                                <h:outputText value="#{rez.date}" />
+                            </p:column>
+                            <p:column headerText="Location">
+                                <h:outputText value="#{rez.location.name}"/>
+                            </p:column>
+                            <p:column headerText="Hall">
+                                <h:outputText value="#{rez.sala}"/>
+                            </p:column>
+                            <p:column headerText="Available Places">
+                                <h:outputText value="#{rez.availPlaces}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </div>
+
+
+
+
+
+
+
+
+
+
+            </ui:define>
+
+
+        </ui:composition>
+
+    </body>
+</html>

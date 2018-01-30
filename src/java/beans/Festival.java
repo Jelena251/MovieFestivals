@@ -55,7 +55,7 @@ public class Festival implements Serializable {
     private List<Projection> projections;
     @Transient
     private String dateMessage;
-
+    private int maxNum;
     public Festival() {
         projections = new LinkedList();
     }
@@ -95,5 +95,26 @@ public class Festival implements Serializable {
         }
 
         return s;
+    }
+
+    public String locationHallsString() {
+        String s = "";
+        for (Location l : festivalLocations) {
+            s = s + l.toString() + '\n';
+            s = s + "Halls:\n";
+            for (String h : l.getSale()) {
+                s = s + h + '\n';
+            }
+        }
+
+        return s;
+    }
+
+    public String dateString() {
+        if (startDate != null && endDate != null) {
+            return startDate.getDay() + '.' + startDate.getMonth() + '.' + startDate.getYear()
+                    + "  -  " + endDate.getDay() + '.' + endDate.getMonth() + '.' + endDate.getYear();
+        }
+        return null;
     }
 }
