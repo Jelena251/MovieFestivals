@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <body>
+        <f:metadata>
+            <f:viewAction action="#{resAdmin.setKorisnik(controller.logedInUser)}"/>
+        </f:metadata>
+        <ui:composition template="./templates/UserTemplate.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+                    <h:dataTable value="#{resAdmin.reservations}" var="res">
+                        <h:column>
+                            <f:facet name="header">
+                                Reservation ID
+                            </f:facet>
+                            <h:outputText value="#{res.id}">
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                Festival
+                            </f:facet>
+                            <h:outputText value="#{res.projection.festival.name}">
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                Movie
+                            </f:facet>
+                            <h:outputText value="#{res.projection.movie.title}">
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                Location
+                            </f:facet>
+                            <h:outputText value="#{res.projection.location}">
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                Time
+                            </f:facet>
+                            <h:outputText value="#{res.projection.date}">
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                Broj Karata
+                            </f:facet>
+                            <h:outputText value="#{res.numOfTickets}">
+                        </h:column>
+
+                        <h:column>
+                            <c:if test="#{res.state eq 'reserved'}">
+                                <h:commandButton value="Cancel" action="#{resAdmin.cancelReservation(res)}"/>
+                            </c:if>
+                        </h:column>
+
+                    </h:dataTable>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

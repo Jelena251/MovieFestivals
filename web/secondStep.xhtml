@@ -51,7 +51,7 @@
             <h:message for="places" style="color:red" id="avPlaceMsg"/>
 
             <h:outputText value="Price" />
-            <h:inputText id="price" value="#{festivalController.projection.price}" converter="javax.faces.double">
+            <h:inputText id="price" value="#{festivalController.projection.price}" converter="javax.faces.Double">
                 <p:ajax listener="#{festivalController.updateData()}" event="change" update="@this, priceMessage"/>    
             </h:inputText>
             <h:message for="details" style ="color:red" id="priceMessage"/>

@@ -39,7 +39,7 @@
                         </p:column>
                         <p:column headerText="Add As Admin">
                             <h:commandLink value = "Admin" >
-                                <p:ajax event="click" update="@form" listener="#{userRequestController.approveRequest(z, 'admin')}"/>
+                                <p:ajax event="click" update="@form" listener="#{userRequestController.approveRequest(z, 'administrator')}"/>
                             </h:commandLink>
                         </p:column>
                         <p:column headerText="Add As User">

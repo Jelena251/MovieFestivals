@@ -18,7 +18,9 @@ public final class ConstantData {
 
     private static List<String> roles;
     private static Set<Character> specialCharacters; 
-
+    public final static String OUTDATED = "outdated";
+    public final static String APPROVED = "approved";
+    public final static String PENDING = "pending";
     static {
         roles = new LinkedList();
         roles.add("administrator");

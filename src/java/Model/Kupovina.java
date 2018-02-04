@@ -5,44 +5,41 @@
  */
 package Model;
 
-import beans.Place;
+import beans.Korisnik;
+import beans.Projection;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.ElementCollection;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
-
 
 /**
  *
  * @author user
  */
-@Entity(name="locations")
+@Entity
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
-public class Location implements Serializable{
+public class Kupovina implements Serializable{
+
     @GenericGenerator(name = "kaugen", strategy = "increment")
     @GeneratedValue(generator = "kaugen")
     @Id
     private int id;
-    private String name;
-    @ElementCollection
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<String> sale;
-    @ManyToOne
-    @JoinColumn(name = "place_id")
-    private Place place;
     
-    public String toString(){
-        return name + "("+place+")";
-    }
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "projection_id")
+    Projection projection;
+
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "user_id")
+    Korisnik korisnik;
+    int numOfTickets;
 }

@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
@@ -56,6 +57,7 @@ public class Festival implements Serializable {
     @Transient
     private String dateMessage;
     private int maxNum;
+    
     public Festival() {
         projections = new LinkedList();
     }

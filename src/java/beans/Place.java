@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -26,6 +27,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 @ManagedBean
 @Entity(name = "places")
 @Data
+@NoArgsConstructor
 public class Place implements Serializable {
 
     @GenericGenerator(name = "kaugen", strategy = "increment")

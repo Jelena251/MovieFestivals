@@ -99,7 +99,7 @@
 
                             <p:column headerText="Number Of Tickets">
                                 <h:selectOneMenu value="#{reservationController.ticketNumber}">
-                                    <f:selectItems value="#{reservationController.getSelectValues(rez.festival.maxNum)}"/>
+                                    <f:selectItems value="#{reservationController.getSelectValues(rez.availPlaces)}"/>
                                 </h:selectOneMenu>
                             </p:column>
                             <p:column>

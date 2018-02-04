@@ -7,6 +7,8 @@ package Model;
 
 import beans.Korisnik;
 import beans.Projection;
+import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -24,17 +26,21 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reservation {
+public class Reservation implements Serializable {
 
     @Id
-    String id;
+    private String id;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "projection_id")
-    Projection projection;
+    private Projection projection;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "user_id")
-    Korisnik korisnik;
-    int numOfTickets;
+    private Korisnik korisnik;
+    private int numOfTickets;
+    
+    private Date creationTime;
+    
+    private String state;
 }

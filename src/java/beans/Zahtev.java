@@ -6,24 +6,22 @@
 package beans;
 
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import lombok.Data;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.cfg.Configuration;
 
 /**
  *
  * @author user
  */
-@ManagedBean
 @Entity(name = "zahtevi")
 @Data
+@NoArgsConstructor
 public class Zahtev implements Serializable {
 
     @GenericGenerator(name = "kaugen", strategy = "increment")
@@ -33,23 +31,12 @@ public class Zahtev implements Serializable {
 
     private String name;
     private String surname;
+    @Column(unique = true)
     private String username;
     private String password;
     private String confirmPass;
     private String phone;
     private String email;
-
-    public String register() {
-        Configuration cfg = new Configuration();
-        cfg.configure("resources/hibernate.cfg.xml");
-        SessionFactory sf = cfg.buildSessionFactory();
-        Session s = sf.openSession();
-        Transaction t = s.beginTransaction();
-        s.save(this);
-        t.commit();
-        s.close();
-        return "index";
-    }
 
     public String toString() {
         return username;

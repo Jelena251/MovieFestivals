@@ -66,6 +66,11 @@ public class FestivalContoller implements Serializable {
 
     private Date timeObj;
     private String festivalMessage;
+    
+    
+    private int currentStep = 1;
+    private String stepPage = "firstStep";
+    private boolean complete = false;
 
     public FestivalContoller() {
         locations = new LinkedList();
@@ -281,6 +286,7 @@ public class FestivalContoller implements Serializable {
         }
         festival = new Festival();
         locations = new LinkedList<>();
+        resetSteps();
         return "";
     }
 
@@ -304,5 +310,34 @@ public class FestivalContoller implements Serializable {
         }
         Date lDate = new Date(date.getTime());
         return lDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+    
+    
+    public void nextStep() {
+        currentStep++;
+
+        switch (currentStep) {
+            case 1:
+                stepPage = "firstStep";
+                break;
+            case 2:
+                stepPage = "secondStep";
+                break;
+            case 3:
+                stepPage = "thirdStep";
+                complete = true;
+                break;
+            default:
+                stepPage = "firstStep";
+                complete = false;
+                currentStep = 1;
+                break;
+        }
+    }
+
+    public void resetSteps() {
+        stepPage = "firstStep";
+        currentStep = 1;
+        complete = false;
     }
 }

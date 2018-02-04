@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -28,6 +29,7 @@ import org.hibernate.annotations.LazyCollectionOption;
  */
 @Entity(name = "projection")
 @Data
+@NoArgsConstructor
 public class Projection implements Serializable {
 
     @GenericGenerator(name = "kaugen", strategy = "increment")

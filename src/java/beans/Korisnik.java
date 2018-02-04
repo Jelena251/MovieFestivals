@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -21,6 +22,7 @@ import org.hibernate.annotations.GenericGenerator;
 @ManagedBean
 @Entity(name = "korisnici")
 @Data
+@NoArgsConstructor
 public class Korisnik implements Serializable {
 
     @GenericGenerator(name = "kaugen", strategy = "increment")
