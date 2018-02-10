@@ -57,7 +57,7 @@ public class FestivalContoller implements Serializable {
     private String locationMessage;
 
     private List<Movie> movies;
-    private String chosenMovie;
+    private int chosenMovie;
     private Movie movieObj;
 
     private String chosenHall;
@@ -178,7 +178,7 @@ public class FestivalContoller implements Serializable {
             }
 
             movies.add(movieObj);
-            chosenMovie = movieObj.getTitle();
+            chosenMovie = movieObj.getId();
             projection.setMovie(movieObj);
         }
     }
@@ -250,7 +250,7 @@ public class FestivalContoller implements Serializable {
 
     public Movie fetchMovieObj() {
         return movies.stream()
-                .filter(m -> m.getTitle().equals(chosenMovie))
+                .filter(m -> m.getId()==chosenMovie)
                 .findFirst()
                 .orElse(null);
     }

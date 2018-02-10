@@ -10,9 +10,8 @@
     <h:body>
         <h:panelGrid columns="3" id="pannelGrid1">
             <h:outputText value="Movie"/>
-            <h:selectOneMenu value="#{festivalController.chosenMovie}" id="selectionMenu" >
-                <f:selectItems  value="#{festivalController.movies}" var="movie" itemValue="#{movie.title}" itemLabel="#{movie.title}" />
-                <p:ajax event="change" update="time"/>
+            <h:selectOneMenu value="#{festivalController.chosenMovie}" id="selectionMenu" rendered="true">
+                <f:selectItems  value="#{festivalController.movies}" var="m" itemValue="#{m.id}" itemLabel="#{m.title}"/>
             </h:selectOneMenu>
             <p:commandButton value="Add new" type="button" onclick="PF('addMovieDlg').show();">
                 <p:ajax event="dialogReturn" listener="#{festivalController.updateMovies()}" update="selectionMenu"/>

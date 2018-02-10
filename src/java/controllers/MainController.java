@@ -8,7 +8,7 @@ package controllers;
 import Model.Location;
 import beans.Korisnik;
 import beans.Place;
-import constants.ConstantData;
+import beans.Zahtev;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +17,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
+import lombok.Data;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -30,7 +31,8 @@ import org.hibernate.criterion.Restrictions;
  */
 @ManagedBean(name = "controller")
 @SessionScoped
-public class MainController implements Serializable{
+@Data
+public class MainController implements Serializable {
 
     private String username;
     private String password;
@@ -40,115 +42,16 @@ public class MainController implements Serializable{
     private Korisnik logedInUser;
     private String place;
     private String location;
-    private int currentStep = 1;
-    private String stepPage = "firstStep";
-    private boolean isComplete = false;
     private List<String> sale;
     private String sala;
-    
+    private Zahtev zahtev;
+
     public MainController() {
         sale = new LinkedList();
+        zahtev = new Zahtev();
     }
 
-    public List<String> getSale() {
-        return sale;
-    }
 
-    public void setSale(List<String> sale) {
-        this.sale = sale;
-    }
-
-    public String getSala() {
-        return sala;
-    }
-
-    public void setSala(String sala) {
-        this.sala = sala;
-    }
-
-    /**
-     * @return the username
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * @param username the username to set
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
-     * @return the password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * @param password the password to set
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getCurrentStep() {
-        return currentStep;
-    }
-
-    public void setCurrentStep(int currentStep) {
-        this.currentStep = currentStep;
-    }
-
-    public boolean isIsComplete() {
-        return isComplete;
-    }
-
-    public void setIsComplete(boolean isComplete) {
-        this.isComplete = isComplete;
-    }
-
-    public void nextStep() {
-        currentStep++;
-
-        switch (currentStep) {
-            case 1:
-                stepPage = "firstStep";
-                break;
-            case 2:
-                stepPage = "secondStep";
-                break;
-            case 3:
-                stepPage = "thirdStep";
-                isComplete = true;
-                break;
-            default:
-                stepPage = "firstStep";
-                isComplete = false;
-                currentStep=1;
-                break;
-        }
-    }
-    public void resetSteps(){
-        stepPage = "firstStep";
-        currentStep = 1;
-        isComplete = false;
-    }
-    public String getStepPage() {
-        return stepPage;
-    }
-
-    public void setStepPage(String stepPage) {
-        this.stepPage = stepPage;
-    }
-
-    /**
-     * User Log In
-     *
-     * @return
-     */
     public String login() {
         poruka = "";
         Configuration cfg = new Configuration();
@@ -180,7 +83,6 @@ public class MainController implements Serializable{
         }
         return "index ";
     }
-    
 
     public String changePassword() {
         String address = "confirmPassword";
@@ -217,51 +119,6 @@ public class MainController implements Serializable{
             sf.close();
         }
         return address;
-    }
-
-    /**
-     * @return the poruka
-     */
-    public String getPoruka() {
-        return poruka;
-    }
-
-    /**
-     * @param poruka the poruka to set
-     */
-    public void setPoruka(String poruka) {
-        this.poruka = poruka;
-    }
-
-    /**
-     * return all possible roles that user can have
-     */
-    public List<String> getRoles() {
-        return ConstantData.getRoles();
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
-
-    public String getNewPasswordConfirm() {
-        return newPasswordConfirm;
-    }
-
-    public void setNewPasswordConfirm(String newPasswordConfirm) {
-        this.newPasswordConfirm = newPasswordConfirm;
-    }
-
-    public Korisnik getLogedInUser() {
-        return logedInUser;
-    }
-
-    public void setLogedInUser(Korisnik logedInUser) {
-        this.logedInUser = logedInUser;
     }
 
     public String logOut() {
@@ -363,35 +220,35 @@ public class MainController implements Serializable{
         return null;
     }
 
-    public String getPlace() {
-        return place;
-    }
-
-    public void setPlace(String place) {
-        this.place = place;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public void addHall() {
         sale.add(sala);
     }
-    
-    public void deleteSala(){
-         FacesContext fc = FacesContext.getCurrentInstance();
+
+    public void deleteSala() {
+        FacesContext fc = FacesContext.getCurrentInstance();
         Map<String, String> params
                 = fc.getExternalContext().getRequestParameterMap();
         String sala = params.get("salaToDelete");
         sale.remove(sala);
     }
-    
-    public void updateData(){
-        
+
+    public void updateData() {
+
     }
+
+    public String register() {
+        Configuration cfg = new Configuration();
+        cfg.configure("resources/hibernate.cfg.xml");
+        SessionFactory sf = cfg.buildSessionFactory();
+        Session s = sf.openSession();
+        Transaction t = s.beginTransaction();
+        s.save(zahtev);
+        t.commit();
+        s.close();
+        sf.close();
+
+        zahtev = new Zahtev();
+        return "index";
+    }
+
 }
