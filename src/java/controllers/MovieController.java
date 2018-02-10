@@ -43,6 +43,7 @@ public class MovieController implements Serializable {
             Session s = sf.openSession();
             try {
                 Transaction tx = s.beginTransaction();
+                movieObj.getImages().forEach(image -> image.setMovie(movieObj));
                 s.save(movieObj);
                 tx.commit();
             } catch (Exception e) {
@@ -65,7 +66,7 @@ public class MovieController implements Serializable {
     public void upload(FileUploadEvent event) {
         file = event.getFile();
         byte[] contents = file.getContents();
-        movieObj.addPicture(contents);
+        movieObj.addPicture(contents, file.getFileName());
         FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
         FacesContext.getCurrentInstance().addMessage(null, message);
     }

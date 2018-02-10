@@ -68,7 +68,7 @@ public class MainController implements Serializable {
                 if (korisnik.getPassword().equals(this.password)) {
                     logedInUser = korisnik;
                     setSessionUser(korisnik);
-                    return korisnik.getRole();
+                    return korisnik.getRole() + "?faces-redirect=true";
                 } else {
                     poruka = "Passwords do not match!";
                 }
@@ -81,7 +81,7 @@ public class MainController implements Serializable {
             s.close();
             sf.close();
         }
-        return "index ";
+        return "index?faces-redirect=true";
     }
 
     public String changePassword() {
@@ -111,7 +111,7 @@ public class MainController implements Serializable {
             }
             t.commit();
             poruka = "Password successfully changed. You can log in now";
-            address = "login";
+            address = "login?faces-redirect=true";
         } catch (Exception e) {
 
         } finally {
@@ -127,7 +127,7 @@ public class MainController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         session.invalidate();
-        return "index";
+        return "index?faces-redirect=true";
     }
 
     public void setSessionUser(Korisnik korisnik) {
@@ -155,7 +155,7 @@ public class MainController implements Serializable {
             s.close();
             sf.close();
         }
-        return "administrator";
+        return "administrator?faces-redirect=true";
     }
 
     public String addLocation() {
@@ -169,7 +169,7 @@ public class MainController implements Serializable {
         if (p == null) {
             this.poruka = "This place does not exists in the database! Please choose one of the existing places or add a new one!";
             s.close();
-            return "addLocation";
+            return "addLocation?faces-redirect=true";
         }
 
         locationObj.setPlace(p);
@@ -186,7 +186,7 @@ public class MainController implements Serializable {
             s.close();
             sf.close();
         }
-        return "administrator";
+        return "administrator?faces-redirect=true";
     }
 
     /**
@@ -248,7 +248,7 @@ public class MainController implements Serializable {
         sf.close();
 
         zahtev = new Zahtev();
-        return "index";
+        return "index?faces-redirect=true";
     }
 
 }

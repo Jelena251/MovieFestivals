@@ -36,5 +36,6 @@ and open the template in the editor.
     <mapping class="Model.Movie"/>
     <mapping class="Model.Location"/>
     <mapping class="Model.Reservation"/>
+    <mapping class="Model.ImageObject"/>
   </session-factory>
 </hibernate-configuration>

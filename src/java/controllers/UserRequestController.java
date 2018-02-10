@@ -62,7 +62,7 @@ public class UserRequestController {
 
         s.close();
         sf.close();
-        return "administrator";
+        return "administrator?faces-redirect=true";
 
     }
     public String removeRequest(Zahtev request) {
@@ -75,7 +75,7 @@ public class UserRequestController {
         tx.commit();
         s.close();
         sf.close();
-        return "administrator";
+        return "administrator?faces-redirect=true";
     }    
     
 }

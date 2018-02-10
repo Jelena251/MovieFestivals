@@ -21,6 +21,6 @@ public class FestivalDetailsController implements Serializable {
     
     public String showFestivalDetails(Festival festival){
         chosenFestival = festival;
-        return "festivalDetails";
+        return "festivalDetails?faces-redirect=true";
     }
 }

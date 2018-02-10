@@ -6,13 +6,9 @@
 package controllers;
 
 import Model.Movie;
-import beans.Festival;
 import beans.Projection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import lombok.Data;
@@ -37,7 +33,7 @@ public class MovieDetailsController {
     public String showMovieDetails(Movie movie) {
         chosenMovie = movie;
         fetchAllFestivalsForMovie();
-        return "movieDetails";
+        return "movieDetails?faces-redirect=true";
     }
     
     public Date getCurrentDate(){
@@ -61,4 +57,5 @@ public class MovieDetailsController {
             sf.close();
         }
     }
+    
 }

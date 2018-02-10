@@ -22,10 +22,16 @@
                     <div id="movieYearDiv">
                         <h:outputText id="movieYear" value="#{movieDetails.chosenMovie.year}"/>
                     </div>
-                    
-                    <div id="slika">
-                        <p:graphicImage id="slika" value="#{movieDetails.chosenMovie.posterImage}"/>
+
+                    <div id="slika" >
+                        <p:graphicImage value="#{movieDetails.chosenMovie.posterImage}" style="width: 200px; height: 200px"/>
                     </div>
+
+                    <p:galleria value="#{movieDetails.chosenMovie.images}" var="im" panelWidth="500" panelHeight="313">
+                        <p:graphicImage value="#{movieDetails.chosenMovie.image}">
+                            <f:param name="id" value="#{im.id}" />
+                        </p:graphicImage>
+                    </p:galleria>
 
                     <div id="movieContentDiv">
                         <h:panelGrid columns="2">
@@ -77,9 +83,9 @@
 
 
                 </h:form>
-                
-                    <p:dialog widgetVar="reservationDlg">
-                        <h:form>
+
+                <p:dialog widgetVar="reservationDlg">
+                    <h:form>
                         <p:dataTable var="rez" value="#{movieDetails.projections}"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
                                      paginator="true" rows="10" style="margin-bottom:20px" id="regDlgProj"
@@ -111,9 +117,9 @@
                             </p:column>
                         </p:dataTable>
                         <h:commandButton value="Cancel" onclick="reservationDlg.hide()"/>
-                        </h:form>
-                    </p:dialog>
-                
+                    </h:form>
+                </p:dialog>
+
             </ui:define>
 
         </ui:composition>
