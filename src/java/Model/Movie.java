@@ -57,6 +57,7 @@ public class Movie implements Serializable {
     @Column(name = "POSTER")
     @Lob
     private byte[] poster;
+    
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "movie", cascade = {CascadeType.ALL})
@@ -68,6 +69,19 @@ public class Movie implements Serializable {
 
     public Movie() {
         images = new ArrayList<>();
+    }
+    
+    public Movie(String title, String originalTitle, String year, String summary, String Director, String Stars, String runtime, String country, String link1, String link2){
+        this.title=title;
+        this.originalTitle=originalTitle;
+        this.year=Integer.valueOf(year);
+        this.summary=summary;
+        this.director=Director;
+        this.actors=Stars;
+        this.runtime=Integer.valueOf(runtime);
+        this.countries=country;
+        this.link1=link1;
+        this.link2=link2;
     }
 
     public UIComponent getComponent() {

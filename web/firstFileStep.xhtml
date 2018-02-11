@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Upload File</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:growl id="messages" showDetail="true"/>
+            <h:panelGrid columns="2">
+                <h:outputText value="Festival File :"/>
+                <p:fileUpload 
+                    id="fest" 
+                    widgetVar="festUpload" 
+                    fileUploadListener="#{fileFestivalController.uploadFestivals}"  
+                    auto="true"
+                    label="Choose poster.."
+                    allowTypes="/(\.|\/)(json|csv)$/"
+                    update="messages"/>
+                <h:outputText value="Movie File :"/>
+                <p:fileUpload 
+                    id="movieUpload" 
+                    widgetVar="movieUpload" 
+                    fileUploadListener="#{fileFestivalController.uploadMovie}"  
+                    auto="true"
+                    label="Choose poster.."
+                    allowTypes="/(\.|\/)(json|csv)$/"
+                    update="messages"/>
+            </h:panelGrid>
+        </h:form>
+    </h:body>
+</html>
+

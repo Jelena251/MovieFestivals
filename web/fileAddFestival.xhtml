@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:body>
+
+        <ui:composition template="./templates/AdminTemplate.xhtml">
+
+            <ui:define name="content">
+                  <h:form>
+                      <p:steps activeIndex="#{fileFestivalController.currentStep}" styleClass="custom" readonly="false" id="stepC">
+                        <p:menuitem value="Upload File" url="firstFileStep"/>
+                        <p:menuitem value="Add Media" url="secondFileStep"/>
+                        <p:menuitem value="Summary" url="thirdFileStep"/>
+                    </p:steps>
+                    <style type="text/css">
+                        .ui-steps .ui-steps-item {
+                            width: 24%;
+                        }
+
+                        .ui-state-highlight {
+                            text-shadow: none !important;
+                        }
+
+                        .ui-steps.custom {
+                            margin-bottom: 30px;
+                        }
+
+                        .ui-steps.custom .ui-steps-item .ui-menuitem-link {
+                            height: 10px;
+                            padding: 0 1em;
+                        }
+
+                        .ui-steps.custom .ui-steps-item .ui-steps-number {
+                            background-color: #0081c2;
+                            color: #FFFFFF;
+                            display: inline-block;
+                            width: 30px;
+                            border-radius: 10px;
+                            margin-top: -10px;
+                            margin-bottom: 10px;
+                        }
+
+                        .ui-steps.custom .ui-steps-item.ui-state-highlight .ui-steps-title {
+                            color: #555;
+                        }
+                    </style>
+                    <h:panelGrid id="stepContent">
+                        <ui:include src="#{fileFestivalController.stepPage}.xhtml"/>
+                    </h:panelGrid>
+                    <p:commandButton value="Next" disabled = "#{fileFestivalController.complete}" id="nextButton" action = "#{fileFestivalController.updateData()}">
+                        <p:ajax update="stepContent,stepC, @this, completeButton " listener="#{fileFestivalController.nextStep()}" event="click"/>
+                    </p:commandButton>
+                    <p:commandButton value="Complete" disabled = "#{!fileFestivalController.complete}" id="completeButton"  >
+                        <p:ajax update="stepContent,stepC, @this, nextButton " listener="#{fileFestivalController.addNewFestival()}" event="click"/>
+                    </p:commandButton>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

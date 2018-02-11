@@ -7,6 +7,8 @@ package beans;
 
 import Model.Location;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +23,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
@@ -60,6 +61,16 @@ public class Festival implements Serializable {
     
     public Festival() {
         projections = new LinkedList();
+    }
+    
+    public Festival(String name, String startDate, String endDate, List<Location> locations, String about) throws ParseException{
+        this.name = name;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        
+        this.startDate = sdf.parse(startDate);
+        this.endDate = sdf.parse(endDate);
+        this.festivalLocations = locations;
+        this.about = about;
     }
 
     public void setStartDate(Date startDate) {

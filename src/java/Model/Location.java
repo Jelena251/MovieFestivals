@@ -7,6 +7,7 @@ package Model;
 
 import beans.Place;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
@@ -29,6 +31,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Entity(name="locations")
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"id", "sale"})
 public class Location implements Serializable{
     @GenericGenerator(name = "kaugen", strategy = "increment")
     @GeneratedValue(generator = "kaugen")
@@ -42,7 +45,18 @@ public class Location implements Serializable{
     @JoinColumn(name = "place_id")
     private Place place;
     
+    public Location(String name, Place place){
+        this.name = name;
+        this.place = place;
+        this.sale = new ArrayList<>();
+    }
+    
+    public void dodajSalu(String sala){
+        this.sale.add(sala);
+    }
+    
     public String toString(){
         return name + "("+place+")";
     }
+    
 }
