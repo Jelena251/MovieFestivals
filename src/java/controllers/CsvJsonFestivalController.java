@@ -5,6 +5,7 @@
  */
 package controllers;
 
+import Model.Location;
 import Model.Movie;
 import beans.Festival;
 import beans.Place;
@@ -18,6 +19,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import lombok.Data;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.json.JSONArray;
+import org.primefaces.json.JSONObject;
 import org.primefaces.model.UploadedFile;
 import utils.CsvUtils;
 
@@ -60,24 +63,95 @@ public class CsvJsonFestivalController implements Serializable {
     }
 
     public void uploadFestivals(FileUploadEvent event) {
-        
+        FacesMessage message;
+        if (event.getFile() != null) {
 
-        String content = new String(event.getFile().getContents());
+            String type = event.getFile().getFileName().substring(
+                    event.getFile().getFileName().length() - 3
+            );
+            switch (type) {
+                case "csv":
+                    message = parseCsvFestFile(event);
+                    break;
+                case "json":
+                    message = parseJsonFestFile(event);
+                    break;
+                default:
+                    message = new FacesMessage("Failed", "File is not parsed successfully.");
+            }
 
-        if (parseFestivalFile(content)) {
-            FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-
-            FacesContext.getCurrentInstance().addMessage(null, message);
         } else {
-            FacesMessage message = new FacesMessage("Failed", "File is not parsed successfully.");
-
-            FacesContext.getCurrentInstance().addMessage(null, message);
+            message = new FacesMessage("Failed", "File is not parsed successfully.");
         }
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
-    public void uploadMovie(FileUploadEvent event) {
-        FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+    private FacesMessage parseCsvFestFile(FileUploadEvent event) {
+        FacesMessage message = null;
+        String content = new String(event.getFile().getContents());
+        if (parseFestivalFile(content)) {
+            message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+        } else {
+            message = new FacesMessage("Failed", "File is not parsed successfully.");
+        }
+        return message;
+    }
+
+    private FacesMessage parseJsonFestFile(FileUploadEvent event) {
+        FacesMessage message = null;
+        String content = new String(event.getFile().getContents());
+        if (parseFestivalFileJson(content)) {
+            message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+        } else {
+            message = new FacesMessage("Failed", "File is not parsed successfully.");
+        }
+        return message;
+    }
+
+    public void uploadMovies(FileUploadEvent event) {
+        FacesMessage message;
+        if (event.getFile() != null) {
+
+            String type = event.getFile().getFileName().substring(
+                    event.getFile().getFileName().length() - 3
+            );
+            switch (type) {
+                case "csv":
+                    message = parseCsvMovieFile(event);
+                    break;
+                case "json":
+                    message = parseJsonMovieFile(event);
+                    break;
+                default:
+                    message = new FacesMessage("Failed", "File is not parsed successfully.");
+            }
+
+        } else {
+            message = new FacesMessage("Failed", "File is not parsed successfully.");
+        }
         FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    private FacesMessage parseCsvMovieFile(FileUploadEvent event) {
+        FacesMessage message = null;
+        String content = new String(event.getFile().getContents());
+        if (parseMovieFile(content)) {
+            message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+        } else {
+            message = new FacesMessage("Failed", "File is not parsed successfully.");
+        }
+        return message;
+    }
+
+    private FacesMessage parseJsonMovieFile(FileUploadEvent event) {
+        FacesMessage message = null;
+        String content = new String(event.getFile().getContents());
+        if (parseMovieFileJson(content)) {
+            message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+        } else {
+            message = new FacesMessage("Failed", "File is not parsed successfully.");
+        }
+        return message;
     }
 
     public void nextStep() {
@@ -147,14 +221,14 @@ public class CsvJsonFestivalController implements Serializable {
                 if (data.size() < NUMBER_OF_MOVIE_FIELDS) {
                     return false;
                 }
-                try{
+                try {
                     Integer.valueOf(data.get(2));
                     Integer.valueOf(data.get(7));
-                }catch(Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     return false;
                 }
-                movies.add(new Movie(data.get(0), data.get(1), data.get(2),data.get(3),data.get(4),data.get(5),data.get(6), data.get(7),data.get(8),data.get(9)));
+                movies.add(new Movie(data.get(0), data.get(1), data.get(2), data.get(3), data.get(4), data.get(5), data.get(6), data.get(7), data.get(8), data.get(9)));
 
             }
         } catch (Exception e) {
@@ -235,6 +309,94 @@ public class CsvJsonFestivalController implements Serializable {
                 .filter(p -> name.equals(p.getName()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public boolean parseFestivalFileJson(String csvFile) {
+        JSONObject jsonObj = new JSONObject(csvFile);
+        JSONArray lokacije = jsonObj.getJSONArray("Loacations");
+        if (populatePlaces(lokacije)) {
+            JSONArray festivali = jsonObj.getJSONArray("Festivals");
+            if (populateFestivals(festivali)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public boolean parseMovieFileJson(String csvFile) {
+        JSONObject jsonObj = new JSONObject(csvFile);
+        JSONArray filmovi = jsonObj.getJSONArray("Movies");
+        if (populateMovies(filmovi)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean populatePlaces(JSONArray lokacije) {
+        try {
+            places = new ArrayList<>();
+            for (int i = 0; i < lokacije.length(); i++) {
+                JSONObject placesObject = lokacije.getJSONObject(i);
+                List<Location> locationsForPlace = new ArrayList<>();
+                Place place = new Place(placesObject.get("Place").toString(), locationsForPlace);
+                JSONArray locations = placesObject.getJSONArray("Location");
+                for (int j = 0; j < locations.length(); i++) {
+                    String[] locNameAndHall = locations.getJSONObject(j).getString("Name").split(",");
+                    Location locObject = new Location(locNameAndHall[0], place);
+                    if (locNameAndHall.length > 1) {
+                        locObject.dodajSalu(locNameAndHall[1]);
+                    }
+                    locationsForPlace.add(locObject);
+                }
+                place.setLocations(locationsForPlace);
+                places.add(place);
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean populateFestivals(JSONArray festivali) {
+        try {
+            festivals = new ArrayList<>();
+            for (int i = 0; i < festivali.length(); i++) {
+                JSONObject fest = festivali.getJSONObject(i);
+                Place place = getPlace(fest.getString("Place"));
+                if (place == null) {
+                    return false;
+                }
+                festivals.add(new Festival(fest.getString("Festival"), fest.getString("StartDate"), fest.getString("EndDate"),
+                        place.getLocations(), fest.getString("About")));
+            }
+
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean populateMovies(JSONArray filmovi) {
+        try {
+            movies = new ArrayList<>();
+            for (int i = 0; i < filmovi.length(); i++) {
+                JSONObject film = filmovi.getJSONObject(i);
+                Integer.valueOf(film.getString("Year"));
+                Integer.valueOf(film.getString("Runtime"));
+                movies.add(new Movie(film.getString("Title"), film.getString("OriginalTitle"), film.getString("Year"),
+                        film.getString("Summary"), film.getString("Director"),
+                        film.getString("Stars"), film.getString("Runtime"),
+                        film.getString("Country"), film.getString("Link1"), film.getString("Link2")));
+            }
+
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
 }

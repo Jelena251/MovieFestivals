@@ -53,6 +53,7 @@ public class Movie implements Serializable {
     private String countries;
     private String link1;
     private String link2;
+    private String trailer;
 
     @Column(name = "POSTER")
     @Lob
@@ -69,6 +70,12 @@ public class Movie implements Serializable {
 
     public Movie() {
         images = new ArrayList<>();
+    }
+    
+    public void setTrailer(String YTtrailer){
+        //https://www.youtube.com/watch?v=bXkyJxyJT3E
+        String[] strings = YTtrailer.split("v=");
+        trailer = "https://www.youtube.com/v/"+strings[1];
     }
     
     public Movie(String title, String originalTitle, String year, String summary, String Director, String Stars, String runtime, String country, String link1, String link2){

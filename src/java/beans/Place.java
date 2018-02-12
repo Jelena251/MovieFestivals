@@ -58,6 +58,11 @@ public class Place implements Serializable {
         }
         this.locations.add(l);
     }
+    
+    public Place(String name, List<Location> locations){
+        this.name = name;
+        this.locations = locations;
+    }
 
     public void addLocation(String locations) {
         String[] locationArray = locations.split(",");
