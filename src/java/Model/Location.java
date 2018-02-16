@@ -31,12 +31,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Entity(name="locations")
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"id", "sale"})
+@EqualsAndHashCode(exclude = {"sale"})
 public class Location implements Serializable{
-    @GenericGenerator(name = "kaugen", strategy = "increment")
-    @GeneratedValue(generator = "kaugen")
     @Id
-    private int id;
     private String name;
     @ElementCollection
     @LazyCollection(LazyCollectionOption.FALSE)

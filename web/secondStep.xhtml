@@ -11,7 +11,7 @@
         <h:panelGrid columns="3" id="pannelGrid1">
             <h:outputText value="Movie"/>
             <h:selectOneMenu value="#{festivalController.chosenMovie}" id="selectionMenu" rendered="true">
-                <f:selectItems  value="#{festivalController.movies}" var="m" itemValue="#{m.id}" itemLabel="#{m.title}"/>
+                <f:selectItems  value="#{festivalController.movies}" var="m" itemValue="#{m.originalTitle}" itemLabel="#{m.title}"/>
             </h:selectOneMenu>
             <p:commandButton value="Add new" type="button" onclick="PF('addMovieDlg').show();">
                 <p:ajax event="dialogReturn" listener="#{festivalController.updateMovies()}" update="selectionMenu"/>
@@ -19,7 +19,7 @@
 
             <h:outputText value="Location"/>
             <h:selectOneMenu value="#{festivalController.chosenLocation}" id="locSelect">
-                <f:selectItems value="#{festivalController.locations}" var="l" itemValue="#{l.id}" itemLabel="#{l.name}"/>
+                <f:selectItems value="#{festivalController.locations}" var="l" itemValue="#{l.name}" itemLabel="#{l.name}"/>
                 <p:ajax update="@this, hallSelect" event="change" listener="#{festivalController.updateChosenLocationObjForProjection()}"/>
             </h:selectOneMenu>
             <br/>
@@ -31,7 +31,7 @@
 
             <h:outputText value="Day"/>
             <h:selectOneMenu id="date" value="#{festivalController.projection.date}">
-                <f:selectItems value="#{festivalController.allDatesInPeriod()}"/>
+                <f:selectItems value="#{festivalController.festival.allDatesInPeriod}"/>
                 <f:convertDateTime pattern="yyyy-MM-dd"/>
             </h:selectOneMenu>
             <h:message for="date" style="color:red"/>

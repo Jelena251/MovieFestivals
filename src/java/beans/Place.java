@@ -31,10 +31,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 @NoArgsConstructor
 public class Place implements Serializable {
 
-    @GenericGenerator(name = "kaugen", strategy = "increment")
-    @GeneratedValue(generator = "kaugen")
     @Id
-    private int id;
     @Column(unique = true)
     private String name;
     @OneToMany

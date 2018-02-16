@@ -48,7 +48,7 @@ public class MovieDetailsController {
         try { 
             Criteria criteria = s.createCriteria(Projection.class);
             criteria.add(Restrictions.ge("date", getCurrentDate()));
-            criteria.add(Restrictions.eq("movie.id", chosenMovie.getId()));
+            criteria.add(Restrictions.eq("movie.originalTitle", chosenMovie.getOriginalTitle()));
             projections = criteria.list();
         } catch (Exception e) {
             e.printStackTrace();

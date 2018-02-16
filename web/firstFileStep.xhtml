@@ -17,16 +17,16 @@
                     widgetVar="festUpload" 
                     fileUploadListener="#{fileFestivalController.uploadFestivals}"  
                     auto="true"
-                    label="Choose poster.."
+                    label="Upload festivals"
                     allowTypes="/(\.|\/)(json|csv)$/"
                     update="messages"/>
                 <h:outputText value="Movie File :"/>
                 <p:fileUpload 
                     id="movieUpload" 
                     widgetVar="movieUpload" 
-                    fileUploadListener="#{fileFestivalController.uploadMovie}"  
+                    fileUploadListener="#{fileFestivalController.uploadMovies}"  
                     auto="true"
-                    label="Choose poster.."
+                    label="Upload movies"
                     allowTypes="/(\.|\/)(json|csv)$/"
                     update="messages"/>
             </h:panelGrid>

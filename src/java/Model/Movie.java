@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
@@ -26,8 +27,10 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -37,15 +40,14 @@ import org.primefaces.model.StreamedContent;
 @Data
 public class Movie implements Serializable {
 
-    @GenericGenerator(name = "kaugen", strategy = "increment")
-    @GeneratedValue(generator = "kaugen")
-    @Id
-    private int id;
+    
     @Column(unique = true)
     private String title;
     @Column(unique = true)
+    @Id
     private String originalTitle;
     private int year;
+    @Lob
     private String summary;
     private String director;
     private String actors;
@@ -58,7 +60,6 @@ public class Movie implements Serializable {
     @Column(name = "POSTER")
     @Lob
     private byte[] poster;
-    
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "movie", cascade = {CascadeType.ALL})
@@ -71,24 +72,27 @@ public class Movie implements Serializable {
     public Movie() {
         images = new ArrayList<>();
     }
-    
-    public void setTrailer(String YTtrailer){
-        //https://www.youtube.com/watch?v=bXkyJxyJT3E
-        String[] strings = YTtrailer.split("v=");
-        trailer = "https://www.youtube.com/v/"+strings[1];
+
+    public void setTrailer(String YTtrailer) {
+        if (YTtrailer != null && !YTtrailer.isEmpty()) {
+            //https://www.youtube.com/watch?v=bXkyJxyJT3E
+            String[] strings = YTtrailer.split("v=");
+            trailer = "https://www.youtube.com/v/" + strings[1];
+        }
     }
-    
-    public Movie(String title, String originalTitle, String year, String summary, String Director, String Stars, String runtime, String country, String link1, String link2){
-        this.title=title;
-        this.originalTitle=originalTitle;
-        this.year=Integer.valueOf(year);
-        this.summary=summary;
-        this.director=Director;
-        this.actors=Stars;
-        this.runtime=Integer.valueOf(runtime);
-        this.countries=country;
-        this.link1=link1;
-        this.link2=link2;
+
+    public Movie(String title, String originalTitle, int year, String summary, String Director, String Stars, int runtime, String country, String link1, String link2) {
+        this.title = title;
+        this.originalTitle = originalTitle;
+        this.year = year;
+        this.summary = summary;
+        this.director = Director;
+        this.actors = Stars;
+        this.runtime = runtime;
+        this.countries = country;
+        this.link1 = link1;
+        this.link2 = link2;
+        images = new ArrayList<>();
     }
 
     public UIComponent getComponent() {
@@ -129,7 +133,7 @@ public class Movie implements Serializable {
             // So, browser is requesting the image. Get ID value from actual request param.
             String id = context.getExternalContext().getRequestParameterMap().get("id");
             ImageObject obj = images.stream()
-                    .filter(im -> (im.getId() == Integer.valueOf(id) ))
+                    .filter(im -> (im.getId() == Integer.valueOf(id)))
                     .findFirst()
                     .orElse(null);
             if (obj != null) {
@@ -137,5 +141,25 @@ public class Movie implements Serializable {
             }
             return null;
         }
+    }
+
+    public void uploadPoster(FileUploadEvent event) {
+        FacesMessage message;
+        UploadedFile file;
+        file = event.getFile();
+        byte[] contents = file.getContents();
+        this.setPoster(contents);
+        message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    public void upload(FileUploadEvent event) {
+        FacesMessage message;
+        UploadedFile file;
+        file = event.getFile();
+        byte[] contents = file.getContents();
+        this.addPicture(contents, file.getFileName());
+        message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
 }

@@ -46,7 +46,7 @@ public class ProjectionController {
     private int festivalId;
     private Festival festival;
     private List<Location> locations;
-    private int locationId;
+    private String locationId;
     private Location locationObj;
     private List<String> sale;
     private String sala;
@@ -181,7 +181,7 @@ int result = query.executeUpdate();
             List<Location> festLoc = p.getFestival().getFestivalLocations();
             if (festLoc != null && !festLoc.isEmpty()) {
                 locationObj = festLoc.stream()
-                        .filter(l -> l.getId() == locationId)
+                        .filter(l -> l.getName().equals(locationId))
                         .findFirst()
                         .orElse(null);
             }

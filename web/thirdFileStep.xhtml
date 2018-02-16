@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+
+        <h:form>
+            <h:panelGrid columns="2" id="pannelGrid1">
+
+
+                <h:outputText value="Festival"/>
+                <h:selectOneMenu id="festivalMenu" rendered="true" value="#{fileFestivalController.p.festival}">
+                    <f:selectItems  value="#{fileFestivalController.festivals}" var="f" itemLabel="#{f.name}" itemValue="#{f}"/>
+                    <p:ajax event="change" update="@this, locSelect, date" listener="#{fileFestivalController.updateData()}"/>
+                </h:selectOneMenu>
+                <h:outputText value="Movie"/>
+                <h:selectOneMenu id="movieMenu" rendered="true" value="#{fileFestivalController.p.movie}" >
+                    <f:selectItems  value="#{fileFestivalController.movies}" var="m" itemLabel="#{m.originalTitle}" itemValue="#{m}"/>
+                    <p:ajax event="change" update="@this" listener="#{fileFestivalController.updateData()}"/>
+
+                </h:selectOneMenu>
+
+                <h:outputText value="Location"/>
+                <h:selectOneMenu id="locSelect" value="#{fileFestivalController.p.location}">
+                    <f:selectItems value="#{fileFestivalController.festLocations}" var="l" itemValue="#{l}" itemLabel="#{l.name}"/>
+                    <p:ajax update="@this, hallSelect" event="change" listener="#{fileFestivalController.updateData()}"/>
+
+                </h:selectOneMenu>
+                <br/>
+                <h:outputText value="Hall"/>
+                <h:selectOneMenu value="#{fileFestivalController.p.sala}" id="hallSelect">
+                    <f:selectItems value="#{fileFestivalController.locationHalls}"/>
+                    <p:ajax update="@this" event="change" listener="#{fileFestivalController.updateData()}"/>
+                </h:selectOneMenu>
+                <h:message for="hallSelect"/>
+
+                <h:outputText value="Day"/>
+                <h:selectOneMenu id="date" value="#{fileFestivalController.p.date}">
+                    <f:selectItems value="#{fileFestivalController.dates}"/>
+                    <f:convertDateTime pattern="yyyy-MM-dd"/>
+                </h:selectOneMenu>
+                <h:message for="date" style="color:red"/>
+
+                <h:outputText value="Time"/>
+                <p:calendar id="time" value="#{fileFestivalController.timeObj}" pattern="HH:mm" timeOnly="true" >
+                    <f:convertDateTime pattern="HH:mm"/>
+                </p:calendar>
+                <h:message for="time" style="color:red"/>
+
+                <h:outputText value="Available Places"/>
+                <p:inputText value="#{fileFestivalController.p.availPlaces}" converter="javax.faces.Integer" id="places">
+                </p:inputText>
+                <h:message for="places" style="color:red" id="avPlaceMsg"/>
+
+                <h:outputText value="Price" />
+                <h:inputText id="price" value="#{fileFestivalController.p.price}" converter="javax.faces.Double">  
+                </h:inputText>
+                <h:message for="details" style ="color:red" id="priceMessage"/>
+            </h:panelGrid>
+            <p:commandButton value = "Add Projection"  id="addProjectionButton">
+                <p:ajax event="click" update="messageProj" listener="#{fileFestivalController.addProjection()}"/>
+            </p:commandButton>
+        </h:form>
+    </h:body>
+</html>
+

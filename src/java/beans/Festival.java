@@ -9,6 +9,9 @@ import Model.Location;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,12 +39,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Data
 @AllArgsConstructor
 public class Festival implements Serializable {
-
-    @GenericGenerator(name = "kaugen", strategy = "increment")
-    @GeneratedValue(generator = "kaugen")
     @Id
-    private int id;
-
     @Column(unique = true)
     private String name;
     private Date startDate;
@@ -71,6 +69,7 @@ public class Festival implements Serializable {
         this.endDate = sdf.parse(endDate);
         this.festivalLocations = locations;
         this.about = about;
+        this.projections = new ArrayList<>();
     }
 
     public void setStartDate(Date startDate) {
@@ -129,5 +128,27 @@ public class Festival implements Serializable {
                     + "  -  " + endDate.getDay() + '.' + endDate.getMonth() + '.' + endDate.getYear();
         }
         return null;
+    }
+    
+        public List<String> allDatesInPeriod() {
+        List<String> dates = new ArrayList<>();
+        LocalDate start = toLocalDate(this.getStartDate());
+        LocalDate end = toLocalDate(this.getEndDate());
+        if (start == null || end == null) {
+            return new LinkedList<>();
+        }
+        while (!start.equals(end)) {
+            dates.add(start.toString());
+            start = start.plusDays(1);
+        }
+        return dates;
+    }
+
+    public LocalDate toLocalDate(Date date) {
+        if (date == null) {
+            return null;
+        }
+        Date lDate = new Date(date.getTime());
+        return lDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 }

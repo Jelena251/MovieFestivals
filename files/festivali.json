@@ -1,0 +1,60 @@
+{
+    "Festivals": [
+	{
+    "Festival": "46. Fest",
+    "StartDate": "23/02/2018",
+    "EndDate": "01/03/2018",
+    "Place": "Beograd",
+    "About": "Prvi FEST  pod naslovom Hrabri novi svet otvoren je  9. januara 1971. u Domu Sindikata"
+  	},
+  	{
+    "Festival": "Hercegnovski filmski festival",
+    "StartDate": "01/08/2018",
+    "EndDate": "07/08/2018",
+    "Place": "Herceg Novi",
+    "About": "Jugoslovenski filmski festival osnovan je 1986. godine, a danasnji naziv nosi od 2002. godine"
+  	}
+	],
+    "Locations": [
+	{
+    "Place": "Beograd",
+    "Location": [
+		{
+			"Name": "Sava Centar,Velika sala"
+		},
+		{
+			"Name": "Dom sindikata"
+		},
+		{
+			"Name": "Dvorana kulturnog centra BG"
+		},
+		{
+			"Name": "Dom omladine,Velika sala"
+		},
+		{
+			"Name": "Dom omladine,Amerikana"
+		},
+		{
+			"Name": "Centar za kulturu Vlada Divljan"
+		}
+	]
+  },
+	{
+    "Place": "Herceg Novi",
+    "Location": [
+		{
+			"Name": "Kanli kula"
+		},
+		{
+			"Name": "Forte mare"
+		},
+		{
+			"Name": "Amfiteatar hercegnovskog pozorišta"
+		},
+		{
+			"Name": "Atrijum kuće Ive Andrića"
+		}
+	]
+  }
+]
+}

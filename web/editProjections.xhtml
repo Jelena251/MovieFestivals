@@ -71,7 +71,7 @@
                                 <f:facet name="output"><h:outputText value="#{proj.location.name}" /></f:facet>
                                 <f:facet name="input">
                                     <h:selectOneMenu value="#{projectionController.locationId}">
-                                        <f:selectItems value="#{proj.festival.festivalLocations}" noSelectionValue="#{proj.location.name}" var="loc" itemValue="#{loc.id}" itemLabel="#{loc.name}"/>
+                                        <f:selectItems value="#{proj.festival.festivalLocations}" noSelectionValue="#{proj.location.name}" var="loc" itemValue="#{loc.name}" itemLabel="#{loc.name}"/>
                                         <p:ajax event="change" update="halls" listener="#{projectionController.updateLocation(proj)}"/>
                                     </h:selectOneMenu>
                                 </f:facet>

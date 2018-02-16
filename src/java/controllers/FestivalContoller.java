@@ -47,17 +47,17 @@ public class FestivalContoller implements Serializable {
     private UIComponent component;
 
     private List<Place> places;
-    private int chosenPlace;
+    private String chosenPlace;
     private Place placeObj;
 //List of all possible locations for place
     private List<Location> allLocations;
-    private int chosenLocation;
+    private String chosenLocation;
     private Location locationObj;
     private Location locationForProjection;
     private String locationMessage;
 
     private List<Movie> movies;
-    private int chosenMovie;
+    private String chosenMovie;
     private Movie movieObj;
 
     private String chosenHall;
@@ -99,11 +99,11 @@ public class FestivalContoller implements Serializable {
             places = criteria.list();
             if (!places.isEmpty()) {
                 placeObj = places.get(0);
-                chosenPlace = placeObj.getId();
+                chosenPlace = placeObj.getName();
                 allLocations = placeObj.getLocations();
                 if (!allLocations.isEmpty()) {
                     locationObj = allLocations.get(0);
-                    chosenLocation = locationObj.getId();
+                    chosenLocation = locationObj.getName();
                 }
 
             }
@@ -117,17 +117,17 @@ public class FestivalContoller implements Serializable {
 
     public void updatePlacesAndLocations() {
         placeObj = places.stream()
-                .filter(p -> p.getId() == Integer.valueOf(chosenPlace))
+                .filter(p -> p.getName()== chosenPlace)
                 .findFirst()
                 .orElse(null);
         allLocations = placeObj.getLocations();
-        chosenLocation = !allLocations.isEmpty() ? allLocations.iterator().next().getId() : 0;
+        chosenLocation = !allLocations.isEmpty() ? allLocations.iterator().next().getName(): null;
         updateChosenLocationObj();
     }
 
     public void addLocation() {
         Location locToAdd = allLocations.stream()
-                .filter(l -> l.getId() == chosenLocation)
+                .filter(l -> l.getName() == chosenLocation)
                 .findFirst()
                 .orElse(null);
         if (locToAdd != null && locations.contains(locToAdd)) {
@@ -147,9 +147,9 @@ public class FestivalContoller implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         Map<String, String> params
                 = fc.getExternalContext().getRequestParameterMap();
-        int id = Integer.valueOf(params.get("idToDelete"));
+        int title = Integer.valueOf(params.get("originalTitle"));
         for (Location l : locations) {
-            if (l.getId() == id) {
+            if (l.getName().equals(movies)) {
                 locations.remove(l);
                 break;
             }
@@ -178,7 +178,7 @@ public class FestivalContoller implements Serializable {
             }
 
             movies.add(movieObj);
-            chosenMovie = movieObj.getId();
+            chosenMovie = movieObj.getOriginalTitle();
             projection.setMovie(movieObj);
         }
     }
@@ -186,7 +186,7 @@ public class FestivalContoller implements Serializable {
     public void updateChosenLocationObj() {
         if (allLocations != null) {
             this.locationObj = allLocations.stream()
-                    .filter(l -> (l.getId() == chosenLocation))
+                    .filter(l -> (l.getName().equals(chosenLocation)))
                     .findAny().orElse(null);
         }
     }
@@ -194,7 +194,7 @@ public class FestivalContoller implements Serializable {
     public void updateChosenLocationObjForProjection() {
         if (locations != null) {
             this.locationForProjection = locations.stream()
-                    .filter(l -> (l.getId() == chosenLocation))
+                    .filter(l -> (l.getName().equals(chosenLocation)))
                     .findAny().orElse(null);
         }
     }
@@ -250,7 +250,7 @@ public class FestivalContoller implements Serializable {
 
     public Movie fetchMovieObj() {
         return movies.stream()
-                .filter(m -> m.getId()==chosenMovie)
+                .filter(m -> m.getOriginalTitle().equals(chosenMovie))
                 .findFirst()
                 .orElse(null);
     }
@@ -258,7 +258,7 @@ public class FestivalContoller implements Serializable {
     public void onLoadSecondPage() {
         //method to initialize chosenLocation
         //locationObjForProjection
-        chosenLocation = locationForProjection != null ? locationForProjection.getId() : null;
+        chosenLocation = locationForProjection != null ? locationForProjection.getName(): null;
     }
 
     public String addNewFestival() {
@@ -288,28 +288,6 @@ public class FestivalContoller implements Serializable {
         locations = new LinkedList<>();
         resetSteps();
         return "";
-    }
-
-    public List<String> allDatesInPeriod() {
-        List<String> dates = new ArrayList<>();
-        LocalDate start = toLocalDate(festival.getStartDate());
-        LocalDate end = toLocalDate(festival.getEndDate());
-        if (start == null || end == null) {
-            return new LinkedList<>();
-        }
-        while (!start.equals(end)) {
-            dates.add(start.toString());
-            start = start.plusDays(1);
-        }
-        return dates;
-    }
-
-    public LocalDate toLocalDate(Date date) {
-        if (date == null) {
-            return null;
-        }
-        Date lDate = new Date(date.getTime());
-        return lDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
     
     

@@ -9,15 +9,21 @@ import Model.Location;
 import Model.Movie;
 import beans.Festival;
 import beans.Place;
-import java.io.IOException;
+import beans.Projection;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import lombok.Data;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.json.JSONArray;
 import org.primefaces.json.JSONObject;
@@ -45,36 +51,43 @@ public class CsvJsonFestivalController implements Serializable {
     private final int NUMBER_OF_PLACE_FIELDS = 2;
     private final int NUMBER_OF_MOVIE_FIELDS = 10;
 
-    public void upload() throws IOException {
-        if (festivalFile != null) {
-
-            if (movieFile != null) {
-                String content = movieFile.getInputstream().toString();
-            } else {
-                FacesMessage message = new FacesMessage("Failes", "Movie file is missing.!");
-                FacesContext.getCurrentInstance().addMessage(null, message);
-            }
-            FacesMessage message = new FacesMessage("Succesful", festivalFile.getFileName() + " is uploaded.!");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-        } else {
-            FacesMessage message = new FacesMessage("Failed", " Festival file is missing!");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-        }
-    }
+    private List<Projection> projections;
+    private Projection p = new Projection();
+    private Date timeObj;
 
     public void uploadFestivals(FileUploadEvent event) {
         FacesMessage message;
         if (event.getFile() != null) {
 
-            String type = event.getFile().getFileName().substring(
-                    event.getFile().getFileName().length() - 3
-            );
+            String type = event.getFile().getFileName().split("\\.")[1];
             switch (type) {
                 case "csv":
                     message = parseCsvFestFile(event);
                     break;
                 case "json":
                     message = parseJsonFestFile(event);
+                    break;
+                default:
+                    message = new FacesMessage("Failed", "File is not parsed successfully.");
+            }
+
+        } else {
+            message = new FacesMessage("Failed", "File is not parsed successfully.");
+        }
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    public void uploadMovies(FileUploadEvent event) {
+        FacesMessage message;
+        if (event.getFile() != null) {
+
+            String type = event.getFile().getFileName().split("\\.")[1];
+            switch (type) {
+                case "csv":
+                    message = parseCsvMovieFile(event);
+                    break;
+                case "json":
+                    message = parseJsonMovieFile(event);
                     break;
                 default:
                     message = new FacesMessage("Failed", "File is not parsed successfully.");
@@ -108,30 +121,6 @@ public class CsvJsonFestivalController implements Serializable {
         return message;
     }
 
-    public void uploadMovies(FileUploadEvent event) {
-        FacesMessage message;
-        if (event.getFile() != null) {
-
-            String type = event.getFile().getFileName().substring(
-                    event.getFile().getFileName().length() - 3
-            );
-            switch (type) {
-                case "csv":
-                    message = parseCsvMovieFile(event);
-                    break;
-                case "json":
-                    message = parseJsonMovieFile(event);
-                    break;
-                default:
-                    message = new FacesMessage("Failed", "File is not parsed successfully.");
-            }
-
-        } else {
-            message = new FacesMessage("Failed", "File is not parsed successfully.");
-        }
-        FacesContext.getCurrentInstance().addMessage(null, message);
-    }
-
     private FacesMessage parseCsvMovieFile(FileUploadEvent event) {
         FacesMessage message = null;
         String content = new String(event.getFile().getContents());
@@ -163,9 +152,13 @@ public class CsvJsonFestivalController implements Serializable {
                 break;
             case 2:
                 stepPage = "secondFileStep";
+                saveMoviesToDatabase();
                 break;
             case 3:
                 stepPage = "thirdFileStep";
+                break;
+            case 4:
+                stepPage = "fourthFileStep";
                 complete = true;
                 break;
             default:
@@ -186,7 +179,7 @@ public class CsvJsonFestivalController implements Serializable {
 
     }
 
-    public boolean parseFestivalFile(String csvFile) {
+    private boolean parseFestivalFile(String csvFile) {
 
         String[] files = csvFile.split("\\r?\\n-\\s+-\\s+-\\r?\\n");
         if (files.length != 2) {
@@ -204,7 +197,7 @@ public class CsvJsonFestivalController implements Serializable {
         return true;
     }
 
-    public boolean parseMovieFile(String movieFile) {
+    private boolean parseMovieFile(String movieFile) {
         movies = new ArrayList<>();
         String[] rows = movieFile.split("\\r?\\n");
         if (rows.length < 1) {
@@ -217,18 +210,20 @@ public class CsvJsonFestivalController implements Serializable {
         try {
             for (int i = 1; i < rows.length; i++) {
                 List<String> data = CsvUtils.parseLine(rows[i]);
-
+                int year;
+                int runtime;
                 if (data.size() < NUMBER_OF_MOVIE_FIELDS) {
                     return false;
                 }
                 try {
-                    Integer.valueOf(data.get(2));
-                    Integer.valueOf(data.get(7));
+                    year = Integer.valueOf(data.get(2));
+                    runtime = Integer.valueOf(data.get(6));
                 } catch (Exception e) {
                     e.printStackTrace();
                     return false;
                 }
-                movies.add(new Movie(data.get(0), data.get(1), data.get(2), data.get(3), data.get(4), data.get(5), data.get(6), data.get(7), data.get(8), data.get(9)));
+                String summary=data.get(3).substring(1);
+                movies.add(new Movie(data.get(0), data.get(1), year, summary, data.get(4), data.get(5), runtime, data.get(7), data.get(8), data.get(9)));
 
             }
         } catch (Exception e) {
@@ -296,6 +291,7 @@ public class CsvJsonFestivalController implements Serializable {
                     places.add(new Place(placeName, locationsString));
                 }
             }
+            savePlacesToDatabase();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -311,9 +307,9 @@ public class CsvJsonFestivalController implements Serializable {
                 .orElse(null);
     }
 
-    public boolean parseFestivalFileJson(String csvFile) {
+    private boolean parseFestivalFileJson(String csvFile) {
         JSONObject jsonObj = new JSONObject(csvFile);
-        JSONArray lokacije = jsonObj.getJSONArray("Loacations");
+        JSONArray lokacije = jsonObj.getJSONArray("Locations");
         if (populatePlaces(lokacije)) {
             JSONArray festivali = jsonObj.getJSONArray("Festivals");
             if (populateFestivals(festivali)) {
@@ -326,7 +322,7 @@ public class CsvJsonFestivalController implements Serializable {
         }
     }
 
-    public boolean parseMovieFileJson(String csvFile) {
+    private boolean parseMovieFileJson(String csvFile) {
         JSONObject jsonObj = new JSONObject(csvFile);
         JSONArray filmovi = jsonObj.getJSONArray("Movies");
         if (populateMovies(filmovi)) {
@@ -344,7 +340,7 @@ public class CsvJsonFestivalController implements Serializable {
                 List<Location> locationsForPlace = new ArrayList<>();
                 Place place = new Place(placesObject.get("Place").toString(), locationsForPlace);
                 JSONArray locations = placesObject.getJSONArray("Location");
-                for (int j = 0; j < locations.length(); i++) {
+                for (int j = 0; j < locations.length(); j++) {
                     String[] locNameAndHall = locations.getJSONObject(j).getString("Name").split(",");
                     Location locObject = new Location(locNameAndHall[0], place);
                     if (locNameAndHall.length > 1) {
@@ -355,6 +351,7 @@ public class CsvJsonFestivalController implements Serializable {
                 place.setLocations(locationsForPlace);
                 places.add(place);
             }
+            savePlacesToDatabase();
         } catch (Exception e) {
             return false;
         }
@@ -385,11 +382,11 @@ public class CsvJsonFestivalController implements Serializable {
             movies = new ArrayList<>();
             for (int i = 0; i < filmovi.length(); i++) {
                 JSONObject film = filmovi.getJSONObject(i);
-                Integer.valueOf(film.getString("Year"));
-                Integer.valueOf(film.getString("Runtime"));
-                movies.add(new Movie(film.getString("Title"), film.getString("OriginalTitle"), film.getString("Year"),
+                String title = film.getString("Title");
+                int Year = film.getInt("Year");
+                movies.add(new Movie(film.getString("Title"), film.getString("OriginalTitle"), film.getInt("Year"),
                         film.getString("Summary"), film.getString("Director"),
-                        film.getString("Stars"), film.getString("Runtime"),
+                        film.getString("Stars"), film.getInt("Runtime"),
                         film.getString("Country"), film.getString("Link1"), film.getString("Link2")));
             }
 
@@ -399,4 +396,141 @@ public class CsvJsonFestivalController implements Serializable {
         return true;
     }
 
+    public void uploadPoster(FileUploadEvent event) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String chosenMovie = context.getExternalContext().getRequestParameterMap().get("chosenMovie");
+        int movieId = getMovieIdByOriginalTitle(chosenMovie);
+        if (movieId >= 0) {
+            movies.get(movieId).uploadPoster(event);
+        }
+    }
+
+    public void uploadImage(FileUploadEvent event) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String chosenMovie = context.getExternalContext().getRequestParameterMap().get("chosenMovie");
+        int movieId = getMovieIdByOriginalTitle(chosenMovie);
+        if (movieId >= 0) {
+            movies.get(movieId).upload(event);
+        }
+    }
+
+    private int getMovieIdByOriginalTitle(String title) {
+        for (int i = 0; i < movies.size(); i++) {
+            if (title.equals(movies.get(i).getOriginalTitle())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public List<Location> getFestLocations() {
+        return p.getFestival() != null ? p.getFestival().getFestivalLocations() : new ArrayList<Location>();
+    }
+
+    public List<String> getLocationHalls() {
+        return p.getLocation() != null ? p.getLocation().getSale() : new ArrayList<String>();
+    }
+
+    public List<String> getDates() {
+        return p.getFestival() != null ? p.getFestival().allDatesInPeriod() : new ArrayList<String>();
+    }
+
+    public void addProjection() {
+        if (p.getDate() != null && timeObj != null) {
+            p.getDate().setHours(timeObj.getHours());
+            p.getDate().setMinutes(timeObj.getMinutes());
+        }
+        projections.add(p);
+    }
+
+    public void saveFestivals() {
+        if (festivals == null || festivals.isEmpty()) {
+            return;
+        }
+        Configuration cfg = new Configuration();
+        cfg.configure("resources/hibernate.cfg.xml");
+        SessionFactory sf = cfg.buildSessionFactory();
+        Session s = sf.openSession();
+        try {
+            Transaction tx = s.beginTransaction();
+            festivals.forEach(festival -> {
+                s.saveOrUpdate(festival);
+                for (Projection p : festival.getProjections()) {
+                    p.setFestival(festival);
+                    s.saveOrUpdate(p);
+                }
+            });
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            s.close();
+            sf.close();
+        }
+        resetSteps();
+    }
+
+    private void updateFestivalLocations() {
+        for (Festival f : festivals) {
+
+        }
+    }
+
+    public void updateMovieMedia(Movie m) {
+        Configuration cfg = new Configuration();
+        cfg.configure("resources/hibernate.cfg.xml");
+        SessionFactory sf = cfg.buildSessionFactory();
+        Session s = sf.openSession();
+        try {
+            Transaction tx = s.beginTransaction();
+            s.saveOrUpdate(m);
+
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            s.close();
+            sf.close();
+        }
+    }
+
+    private void savePlacesToDatabase() {
+        Configuration cfg = new Configuration();
+        cfg.configure("resources/hibernate.cfg.xml");
+        SessionFactory sf = cfg.buildSessionFactory();
+        Session s = sf.openSession();
+        try {
+            Transaction tx = s.beginTransaction();
+            for (Place p : places) {
+                s.saveOrUpdate(p);
+                p.getLocations().forEach(l -> {
+                    l.setPlace(p);
+                    s.saveOrUpdate(l);
+                });
+            }
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            s.close();
+            sf.close();
+        }
+    }
+    
+    private void saveMoviesToDatabase(){
+        Configuration cfg = new Configuration();
+        cfg.configure("resources/hibernate.cfg.xml");
+        SessionFactory sf = cfg.buildSessionFactory();
+        Session s = sf.openSession();
+        try {
+            Transaction tx = s.beginTransaction();
+            movies.forEach(m -> s.saveOrUpdate(m));
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            s.close();
+            sf.close();
+        } 
+    }
 }

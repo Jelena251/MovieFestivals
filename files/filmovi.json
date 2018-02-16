@@ -1,0 +1,100 @@
+{
+	"Movies": [
+   {
+      "Title": "Ničije dete",
+      "OriginalTitle": "No one’s child",
+      "Year": 2014,
+      "Summary": "At late eighties, a boy has been found in mountains of Bosnia and Herzegovina. Nobody found out how he came in wild, nor if animals fed and raised him.",
+      "Director": "Vuk Rsumovic",
+      "Stars": "Denis Muric, Milos Timotijevic, Pavle Cemerikic",
+      "Runtime": 95,
+      "Country": "Serbia,Croatia",
+      "Link1": "http://www.imdb.com/title/tt3059656",
+      "Link2": "https://www.rottentomatoes.com/m/nicije_dete"
+   },
+   {
+      "Title": "Bićemo prvaci sveta",
+      "OriginalTitle": "We will be the world champions",
+      "Year": 2015,
+      "Summary": "The story about the founders of the famous Yugoslav Basketball School and the first gold medal at the Championships in Ljubljana in 1970, is based on real events and is dedicated to personalities who have contributed to the emergence and development of basketball in their country.",
+      "Director": "Darko Bajic",
+      "Stars": "Milos Bikovic,Aleksandar Radojicic,Strahinja Blazic",
+      "Runtime": 127,
+      "Country": "Serbia",
+      "Link1": "http://www.imdb.com/title/tt4160726",
+      "Link2": "https://www.rottentomatoes.com/m/bicemo_prvaci_sveta"
+   },
+   {
+      "Title": "Atomski zdesna",
+      "OriginalTitle": "Atomski zdesna",
+      "Year": 2014,
+      "Summary": "/",
+      "Director": "Srđan Dragojević",
+      "Stars": "Srđan Todorović,Tanja Ribić,Branko Đurić",
+      "Runtime": 94,
+      "Country": "Serbia,Montenegro",
+      "Link1": "http://www.imdb.com/title/tt3188768",
+      "Link2": "/"
+   },
+   {
+      "Title": "Kraljica Španije",
+      "OriginalTitle": "La reina de Espana",
+      "Year": 2016,
+      "Summary": "/",
+      "Director": "Fernando Trueba",
+      "Stars": "Penelope Cruz,Cary Elwes,Mandy Patnikin,Antonio Resines",
+      "Runtime": 128,
+      "Country": "Spain",
+      "Link1": "http://www.imdb.com/title/tt2411144",
+      "Link2": "https://www.rottentomatoes.com/m/the_queen_of_spain"
+   },
+   {
+      "Title": "Malena",
+      "OriginalTitle": "Malena",
+      "Year": 2000,
+      "Summary": "Amidst the war climate, a teenage boy discovering himself becomes love-stricken by Malèna, a sensual woman living in a small, narrow-minded Italian town.",
+      "Director": "Giuseppe Tornatore",
+      "Stars": "Monica Bellucci,Giuseppe Sulfaro,Luciano Federico",
+      "Runtime": 109,
+      "Country": "Italia/USA",
+      "Link1": "http://www.imdb.com/title/tt0213847",
+      "Link2": " https://www.rottentomatoes.com/m/1101561_1101561_malena"
+   },
+   {
+      "Title": "Pikova dama",
+      "OriginalTitle": "Dama Pik",
+      "Year": 2016,
+      "Summary": "Once upon a time, the great soprano Sophia Maier conquered the world with her voice, her beauty and the legend she carefully built around herself. Now only the legend remains- the diva herself hasn't performed for years, nor been seen in the glittering circles of society she once dominated. But the woman who fascinated and thrilled the world for so long would like to crown her career with one more triumph. And she'll use every dirty trick she knows to achieve it.",
+      "Director": "Pavel Lungin",
+      "Stars": "Kseniya Rappoport,Ivan Yankovkiy,Igor Mirkurbanov",
+      "Runtime": 120,
+      "Country": "Russia",
+      "Link1": "http://www.imdb.com/title/tt2231457/",
+      "Link2": "/"
+   },
+   {
+      "Title": "Tišina",
+      "OriginalTitle": "Silence",
+      "Year": 2016,
+      "Summary": "The story of two Catholic missionaries (Andrew Garfield and Adam Driver) who face the ultimate test of faith when they travel to Japan in search of their missing mentor (Liam Neeson) - at a time when Catholicism was outlawed and their presence forbidden.",
+      "Director": "Martin Scorsese",
+      "Stars": "/",
+      "Runtime": 161,
+      "Country": "Mexico,USA",
+      "Link1": "http://www.imdb.com/title/tt0490215",
+      "Link2": "/"
+   },
+   {
+      "Title": "Druga strana svega",
+      "OriginalTitle": "The Other Side of Everything",
+      "Year": 2017,
+      "Summary": "For Serbian filmmaker Mila Turajlic, a locked door in her mother's apartment in Belgrade provides the gateway to both her remarkable family history and her country's tumultuous political inheritance. ",
+      "Director": "Mila Turajlić",
+      "Stars": "Srbijanka Turajlić,Mila Turajlić",
+      "Runtime": 100,
+      "Country": "Serbia",
+      "Link1": "http://www.imdb.com/title/tt7218812 ",
+      "Link2": "/"
+   }
+]
+}

@@ -20,7 +20,7 @@
 
             <h:outputText value="Place"/>
             <h:selectOneMenu id="placeSelection" value="#{festivalController.chosenPlace}">
-                <f:selectItems value="#{festivalController.places}" var = "p" itemValue="#{p.id}" itemLabel="#{p.name}"/>
+                <f:selectItems value="#{festivalController.places}" var = "p" itemValue="#{p.name}" itemLabel="#{p.name}"/>
                 <p:ajax update ="locationSelection, placeMessage" listener="#{festivalController.updatePlacesAndLocations()}" event="change" />
             </h:selectOneMenu>
             <h:message for="name" style="color:red" id="placeMessage"/>  
@@ -28,7 +28,7 @@
 
             <h:outputText value="Location"/>
             <h:selectOneMenu id="locationSelection" value="#{festivalController.chosenLocation}">
-                <f:selectItems value="#{festivalController.allLocations}" var="loc" itemValue="#{loc.id}" itemLabel="#{loc.name}"/>
+                <f:selectItems value="#{festivalController.allLocations}" var="loc" itemValue="#{loc.name}" itemLabel="#{loc.name}"/>
                 <p:ajax listener="#{festivalController.updateChosenLocationObj()}" event="change" update="@this, locationMessage"/>
             </h:selectOneMenu>
             <h:message for="name" style="color:red" id="locationMessage"/> 
@@ -46,7 +46,7 @@
                 </h:column>
                 <h:column>
                     <h:commandLink value="Delete" action="#{festivalController.deleteLocation()}">
-                        <f:param name="idToDelete" value="#{location.id}" />
+                        <f:param name="originalTitle" value="#{location.name}" />
                     </h:commandLink>
                 </h:column>
             </h:dataTable>

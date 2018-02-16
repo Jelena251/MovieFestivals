@@ -10,8 +10,8 @@
         <ui:composition template="./templates/AdminTemplate.xhtml">
 
             <ui:define name="content">
-                  <h:form>
-                      <p:steps activeIndex="#{fileFestivalController.currentStep}" styleClass="custom" readonly="false" id="stepC">
+                <h:form>
+                    <p:steps activeIndex="#{fileFestivalController.currentStep}" styleClass="custom" readonly="false" id="stepC">
                         <p:menuitem value="Upload File" url="firstFileStep"/>
                         <p:menuitem value="Add Media" url="secondFileStep"/>
                         <p:menuitem value="Summary" url="thirdFileStep"/>
